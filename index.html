@@ -1,11 +1,458 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gaza</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
 </head>
 <body>
+    <!-- Start Content (text, multimedia) Above the map -->
+    <div id="content">
+        <div id="zero" class="content-container left top">
+            <p class="content-child flexible ">
+                مع استمرار دائرة النزوح؛ <br>
+                هل توجد في غزة مناطق آمنة؟
+            </p>
+        </div>
+
+        <div id="one" class="content-container right bottom">
+            <p class="content-child flexible ">
+                بينما تستمر إسرائيــل في ارتكاب الفظاعات تجاه المدنيين فـي قطاع غــــزة، منذ بداية الصراع في أكتوبر/تشرين الثاني 2023، بقى توثيـــق تلك الانتهـــاكات بصريًا دليلًا مثبتًا في سبيل عدم إفلاتها من العقاب. يضطر المدنيـــون في قطاع غـزة للفرار مــن الهجمات والاستهداف مرارًا وتكرارًا منذ منتصف أكتوبر/ تشرين الثاني 2023  
+            </p>
+        </div>
+
+        <div id="two" class="content-container right-left bottom-top">
+            <p class="content-child flexible ">
+                ثم قامت إسرائيل بتقسيم المنطقة إلى إقطاعات <a href="https://www.idf.il/ar/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/swordsofiron-011223-150/" target="_blank">"بلوكـــات"</a> بأرقام محددة في ديسمبر /كانون الأول؛ مستمرةً فــي إطلاق أوامر الإخلاء والانتقـــال كذريعة للتنصل عن مسؤوليتها فــي استهداف المدنيين             </p>
+
+            <p class="content-child flexible ">
+                آخرها إعلان القوات الإسرائيلية عن بدء عملياتها البرية في شرق مدينة رفح جنوب القطاع في 6 مايو/أيار 2024، طالبةً من النازحين الانتقال الى المنطقة الآمنة حيث كانت رفح منذ بداية الأحداث إلى تاريخ الإعلان منطقة آمنة للنزوح وملجأ للعديد من المدنيين في غزة، ما اضطرهم الاجتياح الأخير للنزوح مجددًا.
+            </p>
+        </div>
+
+        <div id="two-two" class="content-container right-left bottom-top">
+        </div>
+
+        <div id="two-three" class="content-container right-left bottom-top">
+        </div>
+
+        <div id="two-four" class="content-container right-left bottom-top">
+        </div>
+
+        <div id="two-five" class="content-container right-left bottom-top">
+        </div>
+
+        <div id="three" class="content-container right-left bottom-top">
+            <p class="content-child flexible top zoom-rose-bold fixed">
+                أظهرت صور الأقمار الصناعيــة حجم التغيـــر الملحـــوظ فـــي مخيمات النازحين شمال رفـــح و انتقال الخيام في منطقة تــل السلطان بلوك 2371, 24372 الى خانيونس بعد إعلان القوات الإسرائيليـة عبر مناشير تدعو فيها الأحياء الشرقية لرفح بإخلاء المنطقة من السكـــــان بشكل مؤقت إلى المنطقة الإنسانيــة الموسعة.
+            </p>
+
+            <p class="content-child flexible bottom zoom-rose-bold fixed">
+                بالرغم من ذلك لم تكن منطقة <b>تل السلطان</b> ضمن المناطق المحددة للإخلاء ولكنها شهدت انتقال وتغير كبير في شكل توزيع الخيام بعد مرور تسعة أيام من <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid0GJNRiJTdfQApXhgkTMHdaJjLr4nKjJGZUbFTah2VZNjAevtap6VgYNy4CJMxmXcAl" target="_blank">إعلان</a> العمليات العسكرية الجديدة للقوات الإسرائيلية في رفح
+            </p>
+        </div>
+
+        
+        <div id="three-two" class="content-container right-left bottom-top">
+            
+        </div>
+
+        
+        <div id="three-three" class="content-container right-left bottom-top">
+            
+        </div>
+
+        
+        <div id="three-four" class="content-container right-left bottom-top">
+            
+        </div>
+
+        <div id="four" class="content-container center">
+            <p class="content-child flexible">
+                حتى 14 مايو/أيار 2024 أصبحت أجزاء كبيرة من مدينة رفح <b>"مدينة أشباح"</b>، فوفقًا لتقرير الأمم المتحدة حوالي 450,000 من سكان غزة قد تم تهجيرهم قسرًا من أقصى الجنوب بموجب أوامر الإخلاء الإسرائيلية.            </p>
+        </div>
+        
+        <div id="five" class="content-container left top">
+            <p class="content-child flexible top-20 left fixed zoom-rose-bold">
+                يمكن ملاحظة أجزاء من الأراضي الزراعية أيضًا مُسحت من <b>أقصى الجنوب</b> بفعل الإجتياح، بالإضافة إلى تدمير المباني السكنية هناك.
+            </p>
+        </div>
+
+        <div id="five-two" class="content-container left top">
+
+        </div>
+
+        <div id="five-three" class="content-container left top">
+
+        </div>
+
+        <div id="six" class="content-container center">
+            <p class="content-child flexible">
+                لم تكن <b>المنطقة الانسانية المعلنة</b> المكان الأمثل للنزوح، حيث شهدت المنطقة دمارًا واسعًا في الأشهر الماضية
+            </p>
+        </div>
+
+        <div id="seven" class="content-container top left">
+            <p class="content-child content-child-30 flexible top-20 left fixed">
+                 فعلى سبيل المثال منطقة <b>المواصي</b>، والتي تضم أكبر عدد من مخيمات النزوح، عبارة عن <b>أرضي  زراعية</b> رملية تبلغ مساحتها 14 كيلومترًا مربعًا في خان يونس، حيث يُترك الناس في العراء مع القليل من المباني أو الطرق أو عدم وجودها على الإطلاق.  
+            </p>
+        </div>
+
+        <div id="seven-two" class="content-container top left">
+
+        </div>
+
+        <div id="eight" class="content-container bottom right media">
+            <div class="content-child flexible image-with-caption ">
+                <img src="./assets/Mawasii.png" alt="Al Mawassi">
+                <p class="caption">
+                    يذكر <b>فيليب لازارينـي</b> المفوض العام لوكالة الأونروا أن المواصي كانت موطنـًا لأكثر مـن <b>400 ألف</b> شخص، فالمكان مكتظ ولا يتسع لعدد أكبر من النـــاس كما هو الحال في دير البلح في المناطق الوسطى. 
+                </p>
+            </div>
+        </div>
+
+        <div id="nine" class="content-container center media">
+            <div class="content-child quote image-with-caption">
+                <img src="./assets/Mawasii.png" alt="Al Mawassi">
+                <div class="text">
+                    <p class="title">فيليب لازاريني</p>
+                    <blockquote class="quote">
+                        إن الادعاء بأن الناس في غزة يمكنهم الانتقال إلى مناطق "آمنــــة" أو "إنسانيـــة" هو ادعاء كـــاذب.
+                        وفي كل مرة، يعرض حياة المدنيين لخطر جسيم.     
+                        <br>
+                        <span>المفوض العام لوكالة الأونروا - 18 أيار 2024.</span>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div id="ten" class="content-container center graphics fixed-graphics-3">
+            <div class="content-child flexible">
+                <img src="./assets/migrations/damaged buildings.png" alt="Damaged Buildings in Gaza" class="z-background center h-25 animated-image">
+                <img src="./assets/migrations/people migrating.png" alt="Migration in Gaza" class="z-normal center-bottom h-25 animated-image">
+                <img src="./assets/migrations/map.png" alt="Migration in Gaza" class="z-normal top-right h-25 animated-image">
+            </div>
+        </div>
+
+        <div id="ten-two" class="content-container center graphics fixed-graphics-3">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible top-left z-top fixed">
+                    <p>
+                        من 6 -  12 أيار / مايـو 2024، بلغ العدد التقديري <br>
+                        للنازحين من رفح حوالي 360,000 شخص.
+                    </p>
+                    <img class="arrow-top-left" src="./assets/icons/migration_arrow_1.svg" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div id="ten-three" class="content-container center graphics fixed-graphics-3">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible bottom-right z-top fixed">
+                    <p>
+                        من 6 - 19 أيار / مايـو 2024، بلغ العدد التقديري  <br>للنازحين من رفح حوالي 815,000 شخص. 
+                    </p>
+                    <img class="arrow-bottom-right" src="./assets/icons/migration_arrow_2.svg" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div id="ten-four" class="content-container center graphics fixed-graphics-3">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible bottom-left-left z-top fixed">
+                    <p>
+                        من 6 - 26 أيار / مايـو 2024، بلغ العدد التقديري للنازحين من رفح حوالي 945,000 شخص ، مع نزوح 100,000 شخص آخر في شمال غزة. وقد تم إخلاء معظم ملاجئ الأونروا في رفح، مع انتقال النازحين إلى خان يونس ودير البلح.
+                    </p>
+                    <img class="arrow-bottom-left" src="./assets/icons/migration_arrow_3.svg" alt="">
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="eleven" class="content-container left top">
+            <p class="content-child flexible">
+                 فعلى سبيل المثال منطقة <b>المواصي</b>، والتي تضم أكبر عدد من مخيمات النزوح، عبارة عن <b>أرضي  زراعية</b> رملية تبلغ مساحتها 14 كيلومترًا مربعًا في خان يونس، حيث يُترك الناس في العراء مع القليل من المباني أو الطرق أو عدم وجودها على الإطلاق.  
+            </p>
+        </div>
+
+
+        <div id="twelve" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible center-right z-top">
+                    <p>
+                        عند تقطيع فيديو الهجوم يمكن ملاحظة شكل القذيفة المستخدمة والتي تبدو مشابهة لقذائف <b>SPICE</b> الإسرائيلية (النسخة الإسرائيلية من مجموعة <b>JDAM</b> ) 
+                    </p>
+                    <img src="./assets/icons/migration_arrow_1.svg" alt="" class="arrow-bottom-center-left">
+                </div>
+                <video width="320" height="240" class="center spice animated-video" loop>
+                    <source src="./assets/videos/1.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="thirteen" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible bottom-left z-top fixed">
+                    <p>
+                        كما تشبه أيضًا اصدارات إسرائيل الخاصة من MK 83 الأمريكية التي تسمى MPR والتي تتشابه أيضًا مع عائلة <b>Paveway II</b> الأمريكية كذلك.
+                    </p>
+                    <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-bottom-center-left">
+                </div>
+            </div>
+        </div>
+
+        <div id="fourteen" class="content-container center graphics">
+            <div class="center-right-image width-moderate height-moderate fixed" 
+            style="background-image: url(./assets/israel_bomb.png);
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: left;
+                position: absolute;">
+                <img src="./assets/refugee_camp_circle.svg" alt="" class="refugee-camp-circle">
+            </div>
+        </div>
+
+        <div id="fourteen-2" class="content-container center graphics">
+
+            <div class="content-child flexible">
+                <div class="text-graphics flexible top-center z-top">
+                    <p>
+                        لا يمكن التأكد ما إذا كانت نسخة إمريكية أم إسرائيلية في هذه الحالة من خلال النظر للشكل العام فقــط، قـد يحتاج التحديد الدقيق الوصول الى بقايا القذيفة أو صور أقرب لها.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="fifteen" class="content-container top left">
+            <div class="content-child flexible fixed top-20 left">
+                <p>
+                    عند اخذ صورة أوسع للمنطقة المتأثرة تظهر صور الأقمار الصناعية ضربتين إضافيتين على بعد 300 متر من الضربة التي تم توثيقها ونشرها على مواقع التواصل الإجتماعي.
+                </p>
+            </div>
+        </div>
+
+        <div id="sixteen" class="content-container top left">
+
+        </div>
+
+        <div id="seventeen" class="content-container top left">
+
+        </div>
+
+        <div id="eighteen" class="content-container top left">
+
+        </div>
+
+        <div id="nineteen" class="content-container center graphics">
+            <div class="content-child flexible">
+                <video width="320" height="240" class="center spice animated-image-three" loop>
+                    <source src="./assets/videos/2.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="twenty" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible center-right-text z-top">
+                    <p>
+                        بعد يومين من هجوم المواصي أي في مساء 26 مايو/أيار 2024، قصفت القوات الإسرائيلية مخيمات للنازحين في منطقة تل السلطان في المنطقة الرمادية-ليست منطقة إخلاء أو منطقة إنسانية- في مدينة رفح ، وقع على إثر الهجوم قتلى وجرحى أشارت التقارير الأولية للأونروا إلى وقوع 50 ضحية تقريبًا بين النازحين، حيث أصابت الغارة الموقع غير الرسمي المجاور لقاعدة اللوجستيات التابعة للأونروا، فيما قدرت أخيرًا الأمم المتحدة عدد القتلى بـ 200 شخص.
+                    </p>
+                    <img src="./assets/icons/migration_arrow_1.svg" alt="" class="arrow-bottom-center-left">
+                </div>
+            </div>
+        </div>
+
+        <div id="twentyone" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible center-bottom-bottom z-top">
+                    <p class="semi-bold">
+                        وفقًا لبيان المتحدث الإسرائيلي تم استخدام ذخيرتين تزن  17 كجم (37 باوند) في هجومها على المخيم في رفح
+                    </p>
+                </div>
+                <p class="center-bottom quote-general z-top" style="direction: ltr;">
+                    We are talking about munition with 17 Kilos of explosive materiel <br>
+                    <span class="source">Daniel Hagari</span>
+                </p>
+                <video width="320" height="240" class="center spice object-contain" loop>
+                    <source src="./assets/videos/3.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="twentytwo" class="content-container center graphics">
+            <div class="content-child flexible">
+                <img src="./assets/SDB-GBU.png" alt="" class="center width-moderate">
+                <div class="text-graphics flexible center-bottom-bottom z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        بينما ظهرت بقايا القذيفة المستخدمة في الهجوم في فيديو نشره أحد المستخدمين على تليجرام، تعود إلى إحدى <span class="highlighted">القنابـل الأمريكيــة من نوع  SDB-GBU-39</span> ، كانت البقايا تعود لنظام تشغيل الذيل، الذي يتحكم في الزعانف التي توجه القنبلة إلى الهدف. استخدام <span class="highlighted">ذخيرتين تزن 17 كجم (37 باوند)</span> في هجومها <span class="highlighted">على المخيم في رفح</span>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="twentythree" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="center width-moderate height-moderate" 
+                    style="background-image: url(./assets/GBU-39.png);
+                        background-size: contain;
+                        background-repeat: no-repeat;
+                        position: absolute;">
+                    <img src="./assets/refugee_camp_circle.svg" alt="" class="bomb-circle">
+                    <img src="./assets/rectangle_arrow.svg" alt="" class="bomb-circle-arrow">
+                </div>
+                <!-- <img src="" alt=""> -->
+                <div class="text-graphics flexible center-bottom-bottom z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        بينما ظهرت بقايا القذيفة المستخدمة في الهجوم في فيديو نشره أحد المستخدمين على تليجرام، تعود إلى إحدى <span class="highlighted">القنابـل الأمريكيــة من نوع  SDB-GBU-39</span> ، كانت البقايا تعود لنظام تشغيل الذيل، الذي يتحكم في الزعانف التي توجه القنبلة إلى الهدف. استخدام <span class="highlighted">ذخيرتين تزن 17 كجم (37 باوند)</span> في هجومها <span class="highlighted">على المخيم في رفح</span>.
+                    </p>
+                </div>
+                <div class="text-graphics flexible center-left fixed">
+                    <p>
+                        GBU-39 SDB
+                    </p>
+                    <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-left-center">
+                </div>
+            </div>
+        </div>
+
+        <div id="twentyfour" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="center width-moderate height-moderate" 
+                style="background-image: url(./assets/GBU-39_destroyed.png);
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    position: absolute;">
+                    <img src="./assets/refugee_camp_circle.svg" alt="" class="bomb-destroyed-circle">
+                    <img src="./assets/rectangle_arrow.svg" alt="" class="bomb-destroyed-circle-arrow">
+                </div>
+                <div class="text-graphics flexible center-bottom-bottom z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        بينما ظهرت بقايا القذيفة المستخدمة في الهجوم في فيديو نشره أحد المستخدمين على تليجرام، تعود إلى إحدى <span class="highlighted">القنابـل الأمريكيــة من نوع  SDB-GBU-39</span> ، كانت البقايا تعود لنظام تشغيل الذيل، الذي يتحكم في الزعانف التي توجه القنبلة إلى الهدف. استخدام <span class="highlighted">ذخيرتين تزن 17 كجم (37 باوند)</span> في هجومها <span class="highlighted">على المخيم في رفح</span>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="twentyfive" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="center-top width-moderate height-moderate" 
+                style="background-image: url(./assets/bomb_exposed_name.png);
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    position: absolute;">
+                    <img src="./assets/rectangle.svg" alt="" class="rectangle">
+                    <img src="./assets/rectangle_arrow.svg" alt="" class="rectangle-arrow">
+                </div>
+                <div class="text-graphics flexible center-bottom z-top">
+                    <p class="semi-bold font-s-18 margin-bottom-20">
+                        كانت أحد التفاصيل المهمة التي ظهرت على إحدى القطع <span class="highlighted">رقم “81873”</span>، وهو رمز تعريف فريد <span class="highlighted">مخصص لشركة Woodward</span>، وهي شركة تصنيع طيران مقرها في كولورادو.
+من الجدير بالذكر، أن إسرائيل تلقت حتى عام 2023 حوالي 1000 قنبلة GBU-39 من الولايات المتحدة <span class="highlighted">وفقًا لبيانات نقل الأسلحة Sipri. </span>
+                    </p>
+                </div>
+                <div class="text-graphics flexible center-left">
+                    <p>
+                        81873
+                    </p>
+                    <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-left-center" style="scale: 2; left: 100%">
+                </div>
+                <img src="./assets/table.svg" alt="" class="center-bottom-bottom" style="width: 90%; height: 25%">
+            </div>
+        </div>
+
+        <div id="twentysix" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible top-moderate-center z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        عاودت القوات الإسرائيلية قصف خيام المواصي غربي رفح في 28 مايو/أيار 2024، سقط على إثر الهجوم عشرات القتلى والجرحى من النازحين.
+                    </p>
+                </div>
+                <div class="text-graphics flexible center-bottom">
+                    <p class="highlighted">
+                        مقابلة مع إحدى الناجيات من قصف خيام المواصي، تتحدث عن تتابع دورات النزوح والتي لم تحميهم من الموت أيضًا.
+                    </p>
+                </div>
+                <video width="320" height="240" class="center spice object-contain" loop>
+                    <source src="./assets/Audio/1.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="twentyseven" class="content-container center graphics">
+            <div class="content-child flexible">
+                <img src="./assets/Gaza_map_on_video.svg" alt="" class="gaza-map-on-video z-top">
+                <div class="text-graphics flexible top-moderate-center z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، كانت بعض الخيام قد انهارت وبعضها الآخر مُلئ بالثقوب إثر تطاير شظايا المقذوف.​
+                    </p>
+                </div>
+                <video width="320" height="240" class="center spice width-moderate object-contain" loop>
+                    <source src="./assets/videos/4.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="twentyeight" class="content-container left">
+            <div class="content-child flexible top-20">
+                <p class="font-s-24 margin-bottom-20">
+                    كان التأثير واضحًا في صور الأقمار الصناعية الحديثة بتـــاريخ <b>30  يونيو/حزيران 2024</b>، يمكــن ملاحــظة بقعة وانطمار بعض الخيام.​
+                </p>
+            </div>
+        </div>
+
+        <div id="twentynine" class="content-container top-20 left">
+            <div class="content-child flexible">
+                <p class="font-s-24 margin-bottom-20">
+                    بالنظر الى صور الأقمار الصناعية بتاريخ <b>26  يونيو/حزيران 2024 </b>قبيل يومين فقط من الهجوم، يظهر الموقع مزدحمًا بالخيام والنازحين. حيث كانت المنطقة ملجأً للعديد بعد إعلان الاجتياح لرفــــح وإطلاق المنشورات التحذيرية للجوء نحو المنطقة.​
+                </p>
+            </div>
+        </div>
+
+        <div id="thirty" class="content-container top-20 left">
+            <div class="content-child flexible">
+                <p class="font-s-24 margin-bottom-20">
+                    ولكن يمكن ملاحظة اختفاء العديد من تلك الخيام بعد الهجوم، الصورة أُخذت في <b>6 يونيو/حزيران 2024 .​</b>
+                </p>
+            </div>
+        </div>
+
+        <div id="thirtyone" class="content-container center graphics">
+            <div class="content-child flexible">
+                <img src="./assets/refugees.png" alt="" class="center-bottom-bottom h-40">
+                <img src="./assets/gaza_map_with_arrows.svg" alt="" class="top-right">
+                <div class="text-graphics flexible center-top z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        مازال النازحون في قطاع غزة يضطرون كل يومٍ للنزوح لمناطق يعلن أنها آمنة ولكنهم يتفاجأون في كل مرة أنهم يقصفون في خيام نزوحهم. لم تتوقف دائرة النزوح إلى لحظة كتابة هذا التحقيق ولم تتوقف تباعًا الهجمات على المخيمات والنازحين أيضًا ذكرت الأونروا في تقريرها أنه حتى<b> 27 أيار</b>، قتل ما لا يقل عن <b>36,050</b> فلسطينيًا في قطاع غزة منذ <b> 7 تشرين الأول 2023.<b/> بالإضافة إلى <b>81,026</b> فلسطينيًا آخر قد أصيبوا بجروح.​
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="thirtytwo" class="content-container center graphics">
+            <div class="content-child flexible">
+                <img src="./assets/gaza_map_with_arrows.svg" alt="" class="top-right">
+                <img src="./assets/dots.svg" alt="" class="center-left" style="margin-top: 200px">
+                <div class="text-graphics flexible center z-top">
+                    <p class="semi-bold font-s-24 margin-bottom-20">
+                        تستمر المطالبات بوقف إطلاق النار وضرورة إعادة الحياة لمسارها الطبيعي وحماية المدنيين وإحالة كل مرتكبي الجرائم الى العقاب.​
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Content -->
+
+
+    <div id="map"></div>
+
     
+    <!-- GSAP Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <!-- ./GSAP Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="js/main.js" type="module"></script>
 </body>
 </html>
