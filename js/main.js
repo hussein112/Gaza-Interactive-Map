@@ -461,7 +461,7 @@ map.on('load', async () => {
                         // Remove Arrow 1
                         tl.add(removePreviousLayer("arrow", "icon-opacity"))
                         // Add Arrows for Area 2
-                        tl.add(await loadLocalImage('arrow-2', '../assets/map_arrow_two.png', [34.41148, 31.45489]));
+                        tl.add(await loadLocalImage('arrow-2', './assets/map_arrow_two.png', [34.41148, 31.45489]));
                         setTimeout(() => {
                             tl.add(addImageLayer("arrow-2", 0.5))
                         }, 1000)
