@@ -445,7 +445,7 @@ map.on('load', async () => {
                             'fill-opacity': 1,
                         }, false))
                         // Show the Arrow
-                        tl.add(await loadLocalImage('arrow', '../assets/map_arrow_one.png', [34.40864, 31.45657]));
+                        tl.add(await loadLocalImage('arrow', '/assets/map_arrow_one.png', [34.40864, 31.45657]));
                         setTimeout(() => {
                             tl.add(addImageLayer("arrow", 0.9))
                         }, 1000)
@@ -461,12 +461,12 @@ map.on('load', async () => {
                         // Remove Arrow 1
                         tl.add(removePreviousLayer("arrow", "icon-opacity"))
                         // Add Arrows for Area 2
-                        tl.add(await loadLocalImage('arrow-2', './assets/map_arrow_two.png', [34.41148, 31.45489]));
+                        tl.add(await loadLocalImage('arrow-2', '/assets/map_arrow_two.png', [34.41148, 31.45489]));
                         setTimeout(() => {
                             tl.add(addImageLayer("arrow-2", 0.5))
                         }, 1000)
 
-                        tl.add(await loadLocalImage('arrow-2-2', '../assets/map_arrow_two_two.png', [34.30872, 31.32629]));
+                        tl.add(await loadLocalImage('arrow-2-2', '/assets/map_arrow_two_two.png', [34.30872, 31.32629]));
                         setTimeout(() => {
                             tl.add(addImageLayer("arrow-2-2", 0.8))
                         }, 1000)
@@ -504,7 +504,7 @@ map.on('load', async () => {
                             'fill-opacity': 1,
                         }, false))
                         // Show arrows 3
-                        tl.add(await loadLocalImage('arrow-3', '../assets/map_arrow_three.png', [34.26836, 31.28998]));
+                        tl.add(await loadLocalImage('arrow-3', '/assets/map_arrow_three.png', [34.26836, 31.28998]));
                         tl.add(addImageLayer("arrow-3", 0.8))
                         break;
                     case "three":
@@ -513,7 +513,7 @@ map.on('load', async () => {
                         tl.add(removePreviousLayer("evac-area-one", "fill-opacity"))
                         tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
                         tl.add(removePreviousLayer("arrow-3", 'icon-opacity'));
-                        tl.add(await loadLocalSVGImage('khan-younis', '../assets/khanyounis_refugee_camps.svg', [34.29204, 31.35317]));
+                        tl.add(await loadLocalSVGImage('khan-younis', '/assets/khanyounis_refugee_camps.svg', [34.29204, 31.35317]));
                         tl.add(addImageLayer("khan-younis", 2))
                         tl.to("#three .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
                         tl.from("#three .content-child", {y: 100, duration: 0.5})
@@ -527,7 +527,7 @@ map.on('load', async () => {
                         tl.add(removePreviousLayer("khan-younis", "icon-opacity"))
                         tl.add(removePreviousLayer("tal-sultan", "icon-opacity"))
                         // add the second image
-                        tl.add(await loadLocalSVGImage('rafah', '../assets/rafah.svg', [34.242789, 31.308767]));
+                        tl.add(await loadLocalSVGImage('rafah', '/assets/rafah.svg', [34.242789, 31.308767]));
                         map.flyTo({
                             center: [34.242789, 31.308767],
                             essential: true,
@@ -545,7 +545,7 @@ map.on('load', async () => {
                             zoom: 14
                         });
                         // add the third image
-                        tl.add(await loadLocalSVGImage('rafah-two', '../assets/rafah_2.svg', [34.242789, 31.308767]));
+                        tl.add(await loadLocalSVGImage('rafah-two', '/assets/rafah_2.svg', [34.242789, 31.308767]));
                         setTimeout(() => {
                             tl.add(addImageLayer("rafah-two", 2))
                         }, 1000)
@@ -559,7 +559,7 @@ map.on('load', async () => {
                         // Remove second image
                         tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
                         // add the third image
-                        tl.add(await loadLocalSVGImage('rafah-three', '../assets/rafah_3.svg', [34.242789, 31.308767]));
+                        tl.add(await loadLocalSVGImage('rafah-three', '/assets/rafah_3.svg', [34.242789, 31.308767]));
                         tl.add(addImageLayer("rafah-three", 2))
                         break;
                     case "four":
@@ -587,16 +587,16 @@ map.on('load', async () => {
                             essential: true,
                             zoom: 13
                         })
-                        tl.add(await loadLocalSVGImage('south-one', '../assets/south_1.svg', [34.27204, 31.23714]));
+                        tl.add(await loadLocalSVGImage('south-one', '/assets/south_1.svg', [34.27204, 31.23714]));
                         tl.add(addImageLayer("south-one", 5))
                         break;
                     case "five-two":
-                        tl.add(await loadLocalSVGImage('south-two', '../assets/south_2.svg', [34.27204, 31.23714]));
+                        tl.add(await loadLocalSVGImage('south-two', '/assets/south_2.svg', [34.27204, 31.23714]));
                         tl.add(addImageLayer("south-two", 5))
                         tl.add(removePreviousLayer("south-one", "icon-opacity"));
                         break;
                     case "five-three":
-                        tl.add(await loadLocalSVGImage('south-three', '../assets/south_3.svg', [34.270901, 31.235705]));
+                        tl.add(await loadLocalSVGImage('south-three', '/assets/south_3.svg', [34.270901, 31.235705]));
                         tl.add(addImageLayer("south-three", 5))
                         break;
                     case "six":
@@ -632,11 +632,11 @@ map.on('load', async () => {
                         tl.add(addNewLayer("gaza-streets", mainStreets, "line", {
                             'line-color': 'black'
                         }))
-                        // tl.add(await loadLocalSVGImage('mawasi', '../assets/south_3.svg', [34.270901, 31.235705]));
+                        // tl.add(await loadLocalSVGImage('mawasi', '/assets/south_3.svg', [34.270901, 31.235705]));
                         // tl.add(addImageLayer("mawasi", 5))
                         break;
                     case "seven-two":
-                        tl.add(await loadLocalSVGImage('mawasi', '../assets/mawasi.svg', [34.265655, 31.349355]));
+                        tl.add(await loadLocalSVGImage('mawasi', '/assets/mawasi.svg', [34.265655, 31.349355]));
                         tl.add(addImageLayer("mawasi", 2.2))
                         map.flyTo({
                             zoom: 12,
@@ -702,7 +702,7 @@ map.on('load', async () => {
                             essential: true,
                             center: [34.300712, 31.377954]
                         })
-                        tl.add(await loadLocalSVGImage('mawasi-two', '../assets/mawasi_2.svg', [34.300712, 31.377954]));
+                        tl.add(await loadLocalSVGImage('mawasi-two', '/assets/mawasi_2.svg', [34.300712, 31.377954]));
                         tl.add(addImageLayer("mawasi-two", 2))
                         break;
                     case "twelve":
@@ -778,7 +778,7 @@ map.on('load', async () => {
                         }));
                         break;
                     case "sixteen":
-                        tl.add(await loadLocalSVGImage('mawasi-three', '../assets/mawasi_3.svg', [34.282923, 31.373260]));
+                        tl.add(await loadLocalSVGImage('mawasi-three', '/assets/mawasi_3.svg', [34.282923, 31.373260]));
                         tl.add(addImageLayer("mawasi-three", 2.5))
                         map.flyTo({
                             zoom: 13,
@@ -787,10 +787,10 @@ map.on('load', async () => {
                         })
                         break;
                     case "seventeen":
-                        tl.add(await loadLocalSVGImage('mawasi-four', '../assets/mawasi_4.svg', [34.296442, 31.375787]));
+                        tl.add(await loadLocalSVGImage('mawasi-four', '/assets/mawasi_4.svg', [34.296442, 31.375787]));
                         tl.add(addImageLayer("mawasi-four", 2)) 
                         tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
-                        tl.add(await loadLocalSVGImage('mawasi-three', '../assets/mawasi_3.svg', [34.282923, 31.373260]));
+                        tl.add(await loadLocalSVGImage('mawasi-three', '/assets/mawasi_3.svg', [34.282923, 31.373260]));
                         tl.add(addImageLayer("mawasi-three", 2))
                         map.flyTo({
                             zoom: 14,
@@ -800,7 +800,7 @@ map.on('load', async () => {
                         break;
                     case "eighteen":
                         tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
-                        tl.add(await loadLocalSVGImage('mawasi-five', '../assets/mawasi_5.svg', [34.286353, 31.370217]));
+                        tl.add(await loadLocalSVGImage('mawasi-five', '/assets/mawasi_5.svg', [34.286353, 31.370217]));
                         tl.add(addImageLayer("mawasi-five", 2.5)) 
                         map.flyTo({
                             zoom: 15,
@@ -868,7 +868,7 @@ map.on('load', async () => {
                             duration: 1
                         }));
                         // ,
-                        tl.add(await loadLocalSVGImage('mawasi-six', '../assets/mawasi_6.svg', [34.244100, 31.334291]));
+                        tl.add(await loadLocalSVGImage('mawasi-six', '/assets/mawasi_6.svg', [34.244100, 31.334291]));
                         tl.add(addImageLayer("mawasi-six", 3)) 
                         map.flyTo({
                             zoom: 14,
@@ -878,12 +878,12 @@ map.on('load', async () => {
                         break;
                     case "twentynine":
                         tl.add(removePreviousLayer("mawasi-six", 'icon-opacity'))
-                        tl.add(await loadLocalSVGImage('mawasi-seven', '../assets/mawasi_7.svg', [34.244100, 31.334291]));
+                        tl.add(await loadLocalSVGImage('mawasi-seven', '/assets/mawasi_7.svg', [34.244100, 31.334291]));
                         tl.add(addImageLayer("mawasi-seven", 3)) 
                         break;
                     case "thirty":
                         tl.add(removePreviousLayer("mawasi-seven", 'icon-opacity'))
-                        tl.add(await loadLocalSVGImage('mawasi-eight', '../assets/mawasi_8.svg', [34.241040, 31.331591]));
+                        tl.add(await loadLocalSVGImage('mawasi-eight', '/assets/mawasi_8.svg', [34.241040, 31.331591]));
                         tl.add(addImageLayer("mawasi-eight", 3)) 
                         break;
                     case "thirtyone":
