@@ -559,7 +559,7 @@ map.on('load', async () => {
                         // Remove second image
                         tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
                         // add the third image
-                        tl.add(await loadLocalSVGImage('rafah-three', '../assets/rafah_3.svg', [34.242789, 31.308767]));
+                        tl.add(await loadLocalSVGImage('rafah-three', './assets/rafah_3.svg', [34.242789, 31.308767]));
                         tl.add(addImageLayer("rafah-three", 2))
                         break;
                     case "four":
