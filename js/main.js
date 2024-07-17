@@ -78,7 +78,7 @@ const gazaBounds = [
 const map = new maplibregl.Map({
     container: 'map',
     style:
-    'https://api.maptiler.com/maps/basic/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // stylesheet location
+    'https://api.maptiler.com/maps/basic/style.json?key=KhB7EN0Px2jwIG045quV', // stylesheet location
     center: gazaCoordinates,
     zoom: 9.999,
     interactive: false
