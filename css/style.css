@@ -132,7 +132,7 @@ a{
     align-items: center;
     justify-content: center;
     color: white;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .zoom-rose-bold{
