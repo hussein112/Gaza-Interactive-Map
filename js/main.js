@@ -413,21 +413,21 @@ function getCoordinates(id){
 }
 
 const svgImages = [
-    { id: 'rafah', path: 'assets/rafah.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'mawasi-eight', path: 'assets/mawasi_8.svg', coordinates: getCoordinates('mawasi-eight')},
-    { id: 'rafah-two', path: 'assets/rafah_2.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'rafah-three',path:  './assets/rafah_3.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'south-one', path: 'assets/south_1.svg', coordinates: getCoordinates('south-one')},
-    { id: 'south-two', path: 'assets/south_2.svg', coordinates: getCoordinates('south-one')},
-    { id: 'south-three', path: 'assets/south_3.svg', coordinates: getCoordinates("south-three")},
-    { id: 'mawasi', path: 'assets/mawasi.svg', coordinates: [34.265655, 31.349355]},
-    { id: 'mawasi-two', path: 'assets/mawasi_2.svg', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-two-two', path: 'assets/mawasi_2_2.svg', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-four', path: 'assets/mawasi_4.svg', coordinates: [34.296442, 31.375787]},
-    { id: 'mawasi-three', path: 'assets/mawasi_3.svg', coordinates: [34.282923, 31.373260]},
-    { id: 'mawasi-five', path: 'assets/mawasi_5.svg', coordinates: [34.296442, 31.375787]},
-    { id: 'mawasi-six', path: 'assets/mawasi_6.svg', coordinates: [34.244100, 31.334291]},
-    { id: 'mawasi-seven', path: 'assets/mawasi_7.svg', coordinates: [34.244100, 31.334291]},
+    { id: 'rafah', path: '/assets/rafah.svg', coordinates: [34.242789, 31.308767]},
+    { id: 'mawasi-eight', path: '/assets/mawasi_8.svg', coordinates: getCoordinates('mawasi-eight')},
+    { id: 'rafah-two', path: '/assets/rafah_2.svg', coordinates: [34.242789, 31.308767]},
+    { id: 'rafah-three',path:  '/assets/rafah_3.svg', coordinates: [34.242789, 31.308767]},
+    { id: 'south-one', path: '/assets/south_1.svg', coordinates: getCoordinates('south-one')},
+    { id: 'south-two', path: '/assets/south_2.svg', coordinates: getCoordinates('south-one')},
+    { id: 'south-three', path: '/assets/south_3.svg', coordinates: getCoordinates("south-three")},
+    { id: 'mawasi', path: '/assets/mawasi.svg', coordinates: [34.265655, 31.349355]},
+    { id: 'mawasi-two', path: '/assets/mawasi_2.svg', coordinates: [34.300712, 31.377954]},
+    { id: 'mawasi-two-two', path: '/assets/mawasi_2_2.svg', coordinates: [34.300712, 31.377954]},
+    { id: 'mawasi-four', path: '/assets/mawasi_4.svg', coordinates: [34.296442, 31.375787]},
+    { id: 'mawasi-three', path: '/assets/mawasi_3.svg', coordinates: [34.282923, 31.373260]},
+    { id: 'mawasi-five', path: '/assets/mawasi_5.svg', coordinates: [34.296442, 31.375787]},
+    { id: 'mawasi-six', path: '/assets/mawasi_6.svg', coordinates: [34.244100, 31.334291]},
+    { id: 'mawasi-seven', path: '/assets/mawasi_7.svg', coordinates: [34.244100, 31.334291]},
 ];
 
 
@@ -660,7 +660,7 @@ map.on('load', () => {
                                 'fill-opacity': 1,
                             }, false))
                             // Show the Arrow
-                            tl.add(await loadLocalImage('arrow', 'assets/map_arrow_one.png', [34.40864, 31.45657]));
+                            tl.add(await loadLocalImage('arrow', '/assets/map_arrow_one.png', [34.40864, 31.45657]));
                             tl.add(addImageLayer("arrow", getIconSize(0.9, true)))
                             break;
                         case "two-two":
@@ -681,10 +681,10 @@ map.on('load', () => {
                             // Remove Arrow 1
                             tl.add(removePreviousLayer("arrow", "icon-opacity"))
                             // Add Arrows for Area 2
-                            tl.add(await loadLocalImage('arrow-2', 'assets/map_arrow_two.png', [34.41148, 31.45489]));
+                            tl.add(await loadLocalImage('arrow-2', '/assets/map_arrow_two.png', [34.41148, 31.45489]));
                             tl.add(addImageLayer("arrow-2", getIconSize(0.5, true)))
     
-                            tl.add(await loadLocalImage('arrow-2-2', 'assets/map_arrow_two_two.png', [34.30872, 31.32629]));
+                            tl.add(await loadLocalImage('arrow-2-2', '/assets/map_arrow_two_two.png', [34.30872, 31.32629]));
                             tl.add(addImageLayer("arrow-2-2", getIconSize(0.8, true)))
                             break;
                         case "two-four":
@@ -717,7 +717,7 @@ map.on('load', () => {
                                 'fill-opacity': 1,
                             }, false))
                             // Show arrows 3
-                            tl.add(await loadLocalImage('arrow-3', 'assets/map_arrow_three.png', [34.26836, 31.28998]));
+                            tl.add(await loadLocalImage('arrow-3', '/assets/map_arrow_three.png', [34.26836, 31.28998]));
                             tl.add(addImageLayer("arrow-3", getIconSize(0.8, true)))
                             break;
                         case "three-two":
