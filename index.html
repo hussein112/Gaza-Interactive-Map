@@ -9,6 +9,17 @@
     <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
 </head>
 <body>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p class="spinner-text">جاري التحميل</p>
+    </div>
+    <div class="warning">
+        <img src="assets/warning.svg" alt="">
+        <h2>تحذير</h2>
+        <p> تحتوي هذه الصفحة على مواد سمعية وبصرية
+            قد يجدها البعض مزعجة</p>
+        <a id="unlockScrollButton">استمر</a>
+    </div>
     <!-- Start Content (text, multimedia) Above the map -->
     <div id="content">
         <div id="zero" class="content-container left top">
@@ -16,9 +27,12 @@
                 مع استمرار دائرة النزوح؛ <br>
                 هل توجد في غزة مناطق آمنة؟
             </p>
+            <div class="scroll-down content-child">
+                <a id="scrollDown">مرِرِ للأسفل</a>
+            </div>
         </div>
 
-        <div id="one" class="content-container right bottom">
+        <div id="one" class="content-container right bottom single">
             <p class="content-child flexible ">
                 بينما تستمر إسرائيــل في ارتكاب الفظاعات تجاه المدنيين فـي قطاع غــــزة، منذ بداية الصراع في أكتوبر/تشرين الثاني 2023، بقى توثيـــق تلك الانتهـــاكات بصريًا دليلًا مثبتًا في سبيل عدم إفلاتها من العقاب. يضطر المدنيـــون في قطاع غـزة للفرار مــن الهجمات والاستهداف مرارًا وتكرارًا منذ منتصف أكتوبر/ تشرين الثاني 2023  
             </p>
@@ -33,19 +47,29 @@
             </p>
         </div>
 
-        <div id="two-two" class="content-container right-left bottom-top">
+        <div id="two-two" class="content-container left top single">
+            <p class="content-child flexible">
+                بالرجوع إلى التسلسل الزمني لأوامر الإخلاء يكمن اختصار دورة النزوح منذ أكتوبر/تشرين الأول ٢٠٢٣ إلى مايو/أيار ٢٠٢٤ بثلاث دورات رئيسية،  بدأت في ١٤ أكتوبر/تشرين الأول ٢٠٢٣ عندما نُشر أمر  من <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid026B9nzdJi8xreFFxTYXshgo3gUsrgBu54KWn5gQSMhzF2NyhvKHMLGwNtV9bVB2xKl" target="_blank"> القوات الإسرائيلية</a> يدعو سكان شمال القطاع بالتحرك نحو جنوب وادي غزة.
+            </p>
         </div>
 
-        <div id="two-three" class="content-container right-left bottom-top">
+        <div id="two-three" class="content-container left top graphics">
+            <p class="content-child fixed top-left flexible w-30">
+                مع استمرار إلقاء مناشير الإخلاء للشمال وانتقال المدنيين للجنوب، نُشرت <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl">أوامر جديدة</a> في ١٣ ديسمبر/كانون الأول ٢٠٢٣ تطلب من سكان منطقة خان يونس بالنزوح الى مناطق تل السلطان والزهور والشابورة، ومن ثم <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl" target="_blank">إخلاء</a> بعض مناطق جنوب وادي غزة نحو المآوي في دير البلح.
+            </p>
         </div>
 
         <div id="two-four" class="content-container right-left bottom-top">
+
         </div>
 
-        <div id="two-five" class="content-container right-left bottom-top">
+        <div id="two-five" class="content-container left top single">
+            <p class="content-child flexible">
+                في ٦ مايو/أيار ٢٠٢٤، وبعد موجات نزوح مختلفة طُلب من النازحين في المنطقة الشرقية من رفح النزوح مجددًا نحو المنطقة <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid0GPWTMtFMD27aPG2xSpSg2hLqRhEACcmoopCp8qXkEEZvTuTYY9qpsUGp8QuKAYZdl" target="_blank">الإنسانية الموسعة</a> في المواصي.
+            </p>
         </div>
 
-        <div id="three" class="content-container right-left bottom-top">
+        <div id="three-two" class="content-container right-left bottom-top">
             <p class="content-child flexible top zoom-rose-bold fixed">
                 أظهرت صور الأقمار الصناعيــة حجم التغيـــر الملحـــوظ فـــي مخيمات النازحين شمال رفـــح و انتقال الخيام في منطقة تــل السلطان بلوك 2371, 24372 الى خانيونس بعد إعلان القوات الإسرائيليـة عبر مناشير تدعو فيها الأحياء الشرقية لرفح بإخلاء المنطقة من السكـــــان بشكل مؤقت إلى المنطقة الإنسانيــة الموسعة.
             </p>
@@ -53,11 +77,6 @@
             <p class="content-child flexible bottom zoom-rose-bold fixed">
                 بالرغم من ذلك لم تكن منطقة <b>تل السلطان</b> ضمن المناطق المحددة للإخلاء ولكنها شهدت انتقال وتغير كبير في شكل توزيع الخيام بعد مرور تسعة أيام من <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid0GJNRiJTdfQApXhgkTMHdaJjLr4nKjJGZUbFTah2VZNjAevtap6VgYNy4CJMxmXcAl" target="_blank">إعلان</a> العمليات العسكرية الجديدة للقوات الإسرائيلية في رفح
             </p>
-        </div>
-
-        
-        <div id="three-two" class="content-container right-left bottom-top">
-            
         </div>
 
         
@@ -101,11 +120,7 @@
             </p>
         </div>
 
-        <div id="seven-two" class="content-container top left">
-
-        </div>
-
-        <div id="eight" class="content-container bottom right media">
+        <div id="eight" class="content-container bottom right media sm-flex-center">
             <div class="content-child flexible image-with-caption ">
                 <img src="./assets/Mawasii.png" alt="Al Mawassi">
                 <p class="caption">
@@ -173,40 +188,21 @@
 
 
 
-        <div id="eleven" class="content-container left top">
+        <div id="eleven" class="content-container left top single">
             <p class="content-child flexible">
-                 فعلى سبيل المثال منطقة <b>المواصي</b>، والتي تضم أكبر عدد من مخيمات النزوح، عبارة عن <b>أرضي  زراعية</b> رملية تبلغ مساحتها 14 كيلومترًا مربعًا في خان يونس، حيث يُترك الناس في العراء مع القليل من المباني أو الطرق أو عدم وجودها على الإطلاق.  
+                في<b> 24 مايو/أيار 2024 </b>،قصفت الطائرات الإسرائيلية ارض بالقرب من المخيمات في مدينة أصداء بمنطقة المواصي خانيونس حسب <a href="https://archive.md/4qVZ8" target="_blank">البلاغات</a> يومذاك، تعتبر المواصي في المنطقة الإنسانية المزعومة والمعلنة بكونها آمنة.
             </p>
         </div>
 
 
+        <div id="eleven-two" class="content-container left top single">
+            <p class="content-child flexible">
+                أظهرت صور <b>الأقمار الصناعية</b>، الحفرة المتكونة جراء الضربة بالإضافة لحفرة أخرى قريبة منها، طمرت الحفرتين عدد من الخيام ما قد يشير أن الهجوم كان بضربتين على نفس المربع من الأرض.
+            </p>
+        </div>
+
         <div id="twelve" class="content-container center graphics">
-            <div class="content-child flexible">
-                <div class="text-graphics flexible center-right z-top">
-                    <p>
-                        عند تقطيع فيديو الهجوم يمكن ملاحظة شكل القذيفة المستخدمة والتي تبدو مشابهة لقذائف <b>SPICE</b> الإسرائيلية (النسخة الإسرائيلية من مجموعة <b>JDAM</b> ) 
-                    </p>
-                    <img src="./assets/icons/migration_arrow_1.svg" alt="" class="arrow-bottom-center-left">
-                </div>
-                <video width="320" height="240" class="center spice animated-video" loop>
-                    <source src="./assets/videos/1.mp4" type="video/mp4">
-                </video>
-            </div>
-        </div>
-
-        <div id="thirteen" class="content-container center graphics">
-            <div class="content-child flexible">
-                <div class="text-graphics flexible bottom-left z-top fixed">
-                    <p>
-                        كما تشبه أيضًا اصدارات إسرائيل الخاصة من MK 83 الأمريكية التي تسمى MPR والتي تتشابه أيضًا مع عائلة <b>Paveway II</b> الأمريكية كذلك.
-                    </p>
-                    <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-bottom-center-left">
-                </div>
-            </div>
-        </div>
-
-        <div id="fourteen" class="content-container center graphics">
-            <div class="center-right-image width-moderate height-moderate fixed" 
+            <div class="center-left-image width-moderate height-moderate" 
             style="background-image: url(./assets/israel_bomb.png);
                 background-size: contain;
                 background-repeat: no-repeat;
@@ -214,15 +210,35 @@
                 position: absolute;">
                 <img src="./assets/refugee_camp_circle.svg" alt="" class="refugee-camp-circle">
             </div>
+            <div class="text-graphics flexible center-right z-top">
+                <p>
+                    عند تقطيع فيديو الهجوم يمكن ملاحظة شكل القذيفة المستخدمة والتي تبدو مشابهة لقذائف <b>SPICE</b> الإسرائيلية (النسخة الإسرائيلية من مجموعة <b>JDAM</b>) 
+                </p>
+                <img src="./assets/icons/migration_arrow_1.svg" alt="" class="arrow-bottom-center-left">
+            </div>
         </div>
 
-        <div id="fourteen-2" class="content-container center graphics">
-
+        <div id="thirteen" class="content-container center graphics">
             <div class="content-child flexible">
-                <div class="text-graphics flexible top-center z-top">
+                <div class="text-graphics flexible bottom-left w-30 z-top">
+                    <p>
+                        كما تشبه أيضًا اصدارات إسرائيل الخاصة من MK 83 الأمريكية التي تسمى MPR والتي تتشابه أيضًا مع عائلة <b>Paveway II</b> الأمريكية كذلك.
+                    </p>
+                    <img class="arrow-bottom-left" src="./assets/icons/migration_arrow_4.svg" alt="">
+                </div>
+                <video width="320" height="240" class="center spice animated-video" controls>
+                    <source src="./assets/videos/1.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <div id="fourteen" class="content-container center graphics">
+            <div class="content-child flexible">
+                <div class="text-graphics flexible bottom-left z-top fixed">
                     <p>
                         لا يمكن التأكد ما إذا كانت نسخة إمريكية أم إسرائيلية في هذه الحالة من خلال النظر للشكل العام فقــط، قـد يحتاج التحديد الدقيق الوصول الى بقايا القذيفة أو صور أقرب لها.
                     </p>
+                    <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-bottom-center-left">
                 </div>
             </div>
         </div>
@@ -235,10 +251,6 @@
             </div>
         </div>
 
-        <div id="sixteen" class="content-container top left">
-
-        </div>
-
         <div id="seventeen" class="content-container top left">
 
         </div>
@@ -247,9 +259,17 @@
 
         </div>
 
+        <div id="eighteen-two" class="content-container center">
+            <p class="content-child">
+                <b>
+                    بالرغم تحديد المنطقة كمنطقة إنسانية "آمنة" إلا أن القوات الإسرائيلية تستمر في إلقاء هجماتها مستخدمةً ذريعة إلقاء مناشير تحذيرية قبيل القصف طالبة من النازحين النزوح مجددًا.
+                </b>
+            </p>
+        </div>
+
         <div id="nineteen" class="content-container center graphics">
             <div class="content-child flexible">
-                <video width="320" height="240" class="center spice animated-image-three" loop>
+                <video width="320" height="240" class="center spice animated-image-three" controls>
                     <source src="./assets/videos/2.mp4" type="video/mp4">
                 </video>
             </div>
@@ -277,7 +297,7 @@
                     We are talking about munition with 17 Kilos of explosive materiel <br>
                     <span class="source">Daniel Hagari</span>
                 </p>
-                <video width="320" height="240" class="center spice object-contain" loop>
+                <video width="320" height="240" class="center spice object-contain">
                     <source src="./assets/videos/3.mp4" type="video/mp4">
                 </video>
             </div>
@@ -375,7 +395,7 @@
                         مقابلة مع إحدى الناجيات من قصف خيام المواصي، تتحدث عن تتابع دورات النزوح والتي لم تحميهم من الموت أيضًا.
                     </p>
                 </div>
-                <video width="320" height="240" class="center spice object-contain" loop>
+                <video width="320" height="240" class="center spice object-contain" controls>
                     <source src="./assets/Audio/1.mp4" type="video/mp4">
                 </video>
             </div>
@@ -389,7 +409,7 @@
                         ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، كانت بعض الخيام قد انهارت وبعضها الآخر مُلئ بالثقوب إثر تطاير شظايا المقذوف.​
                     </p>
                 </div>
-                <video width="320" height="240" class="center spice width-moderate object-contain" loop>
+                <video width="320" height="240" class="center spice width-moderate object-contain" controls>
                     <source src="./assets/videos/4.mp4" type="video/mp4">
                 </video>
             </div>
