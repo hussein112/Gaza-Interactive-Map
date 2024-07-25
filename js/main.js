@@ -15,12 +15,11 @@ import { evac_area_4 } from './data/evac_area_4.js';
 import { evac_area_5 } from './data/evac_area_5.js';
 
 
-
-
 const elements = document.querySelectorAll("body *");
 const sections = document.querySelectorAll('.content-container');
 const totalSections = sections.length;
 
+let lastLoadedIndex = -1;
 
 document.addEventListener('DOMContentLoaded', () => {
     showLoading();
@@ -86,12 +85,71 @@ function preventScroll(e) {
     return false;
 }
 
+async function loadSVGImage(img) {
+    if (loadedImages[img.id]) {
+        console.log(`${img.id} already loaded, skipping.`);
+        return;
+    }
+    try {
+        await loadLocalSVGImage(img.id, img.path, img.coordinates);
+        loadedImages[img.id] = true;
+        console.log(`Loaded ${img.id}`);
+    } catch (error) {
+        console.error(`Failed to load ${img.id}:`, error);
+        loadedImages[img.id] = false;
+    }
+}
+function checkAllSVGsLoaded() {
+    const loadedCount = Object.values(loadedImages).filter(Boolean).length;
+    const totalCount = svgImages.length;
+    
+    // const allLoaded = loadedCount === totalCount;
+    // console.log(`Loaded ${loadedCount} out of ${totalCount} SVGs. All loaded: ${allLoaded}`);
+    return loadedCount;
+}
+async function loadSVGImages(count = 1) {
+    const startIndex = lastLoadedIndex + 1;
+    const endIndex = Math.min(startIndex + count, svgImages.length);
+
+    for (let i = startIndex; i < endIndex; i++) {
+        await loadSVGImage(svgImages[i]);
+        lastLoadedIndex = i;
+    }
+
+    console.log(`Loaded images from index ${startIndex} to ${lastLoadedIndex}`);
+    return checkAllSVGsLoaded();
+}
+
 function lockScroll(){
     document.body.style.overflowY = 'hidden';
     document.addEventListener('wheel', preventScroll, { passive: false });
     document.addEventListener('touchmove', preventScroll, { passive: false });
 }
 
+setTimeout(() => {
+    elements.forEach(element => {
+        if(element.id !== "loading-screen" && !element.classList.contains("spinner") && !element.classList.contains("spinner-text")){
+            element.classList.remove('hidden-content');
+        }
+    })
+}, 1000)
+
+// Disable Scroll until ok is clicked
+// lockScroll();
+// Unlock page (remove warning) on button click
+document.getElementById('unlockScrollButton').addEventListener('click', function() {
+    snapScroll();
+    document.removeEventListener('wheel', preventScroll);
+    document.removeEventListener('touchmove', preventScroll);
+    document.querySelector(".warning").style.opacity = 0;
+    setTimeout(() => {
+        document.querySelector(".warning").style.display = "none";
+    }, 1000)
+    // document.getElementById("scrollDown").addEventListener("click", () => {
+    //     scrollToSection(1);
+    // })
+    this.disabled = true;
+});
 function showLoading(){
     let showContent = false;
 
@@ -124,33 +182,33 @@ function showLoading(){
 
 
     // Function to watch areAllSVGsLoaded and dispatch event when true
-    function watchSVGLoading() {
-        if (areAllSVGsLoaded()) {
-            const event = new CustomEvent(SVG_LOADED_EVENT);
-            document.dispatchEvent(event);
-            hideLoadingScreen();
-            // Disable Scroll until ok is clicked
-            // lockScroll();
-            // Unlock page (remove warning) on button click
-            document.getElementById('unlockScrollButton').addEventListener('click', function() {
-                // snapScroll();
-                // document.removeEventListener('wheel', preventScroll);
-                // document.removeEventListener('touchmove', preventScroll);
-                document.querySelector(".warning").style.opacity = 0;
-                setTimeout(() => {
-                    document.querySelector(".warning").style.display = "none";
-                }, 1000)
-                // document.getElementById("scrollDown").addEventListener("click", () => {
-                //     scrollToSection(1);
-                // })
-                this.disabled = true;
-            });
-        } else {
-            requestAnimationFrame(watchSVGLoading);
-        }
-    }
+    // function watchSVGLoading() {
+    //     if (areAllSVGsLoaded()) {
+    //         const event = new CustomEvent(SVG_LOADED_EVENT);
+    //         document.dispatchEvent(event);
+    //         hideLoadingScreen();
+    //         // Disable Scroll until ok is clicked
+    //         // lockScroll();
+    //         // Unlock page (remove warning) on button click
+    //         document.getElementById('unlockScrollButton').addEventListener('click', function() {
+    //             snapScroll();
+    //             document.removeEventListener('wheel', preventScroll);
+    //             document.removeEventListener('touchmove', preventScroll);
+    //             document.querySelector(".warning").style.opacity = 0;
+    //             setTimeout(() => {
+    //                 document.querySelector(".warning").style.display = "none";
+    //             }, 1000)
+    //             // document.getElementById("scrollDown").addEventListener("click", () => {
+    //             //     scrollToSection(1);
+    //             // })
+    //             this.disabled = true;
+    //         });
+    //     } else {
+    //         requestAnimationFrame(watchSVGLoading);
+    //     }
+    // }
 
-    // lockScroll();
+    lockScroll();
     // Hide content on document load
     updateContentVisibility();
 
@@ -158,7 +216,7 @@ function showLoading(){
     // showLoadingScreen();
 
     // Show content on assets load
-    watchSVGLoading();
+    // watchSVGLoading();
 }
 
 // Hide the loading screen
@@ -293,6 +351,7 @@ async function loadLocalSVGImage(name, path, coordinates) {
         img.src = url;
     });
 }
+
 async function preloadSVGImages() {
   try {
     const loadPromises = svgImages.map(async (img) => {
@@ -414,22 +473,21 @@ function getCoordinates(id){
 
 const svgImages = [
     { id: 'rafah', path: 'assets/rafah.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'mawasi-eight', path: 'assets/mawasi_8.svg', coordinates: getCoordinates('mawasi-eight')},
     { id: 'rafah-two', path: 'assets/rafah_2.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'rafah-three',path:  'assets/rafah_3.svg', coordinates: [34.242789, 31.308767]},
+    { id: 'rafah-three',path:  './assets/rafah_3.svg', coordinates: [34.242789, 31.308767]},
     { id: 'south-one', path: 'assets/south_1.svg', coordinates: getCoordinates('south-one')},
     { id: 'south-two', path: 'assets/south_2.svg', coordinates: getCoordinates('south-one')},
     { id: 'south-three', path: 'assets/south_3.svg', coordinates: getCoordinates("south-three")},
     { id: 'mawasi', path: 'assets/mawasi.svg', coordinates: [34.265655, 31.349355]},
     { id: 'mawasi-two', path: 'assets/mawasi_2.svg', coordinates: [34.300712, 31.377954]},
     { id: 'mawasi-two-two', path: 'assets/mawasi_2_2.svg', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-four', path: 'assets/mawasi_4.svg', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-three', path: 'assets/mawasi_3.svg', coordinates: [34.282923, 31.373260]},
+    { id: 'mawasi-four', path: 'assets/mawasi_4.svg', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-five', path: 'assets/mawasi_5.svg', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-six', path: 'assets/mawasi_6.svg', coordinates: [34.244100, 31.334291]},
     { id: 'mawasi-seven', path: 'assets/mawasi_7.svg', coordinates: [34.244100, 31.334291]},
+    { id: 'mawasi-eight', path: 'assets/mawasi_8.svg', coordinates: getCoordinates('mawasi-eight')},
 ];
-
 
 // 31.39533,34.46991
 const gazaCoordinates = [34.46991,31.39533];
@@ -470,7 +528,12 @@ const map = new maplibregl.Map({
     interactive: false
 });
 
-map.on('load', () => {
+preloadSVGImages();
+setTimeout(() => {
+    hideLoadingScreen();
+}, 2000);
+
+map.on('load', async () => {
     map.fitBounds(getGazaBounds(), {
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
         maxZoom: 15, 
@@ -582,7 +645,7 @@ map.on('load', () => {
 
 
     /*** Start Scrolls ***/
-    preloadSVGImages();
+    // preloadSVGImages();
     const containers = document.querySelectorAll(".content-container");
     
     containers.forEach((container, index) => {
@@ -593,7 +656,7 @@ map.on('load', () => {
             y: 200
         });    
         let tl;
-        if(areAllSVGsLoaded){
+        if(true){
             ScrollTrigger.create({
                 trigger: container,
                 start: "top 50%",
@@ -759,6 +822,8 @@ map.on('load', () => {
                             tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
                             // add the third image
                             tl.add(addImageLayer("rafah-three", getIconSize(2)))
+
+                            // Load South images
                             break;
                         case "four":
                             tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -903,9 +968,7 @@ map.on('load', () => {
                         case "thirteen":
                             tl.to(".animated-video", {visibility: "visible", opacity: 1, duration: 0.1})
                             tl.from(".animated-video", {y: 100, duration: 0.5, clearProps: "transform"})
-                            playVideo("#thirteen")
-
-                            
+                            playVideo("#thirteen")                            
                             break;
                         case "fourteen":
                             tl.to("#fourteen .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
