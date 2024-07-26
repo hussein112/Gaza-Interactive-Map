@@ -22,6 +22,7 @@ const totalSections = sections.length;
 let lastLoadedIndex = -1;
 
 document.addEventListener('DOMContentLoaded', () => {
+    preloadMainImages();
     showLoading();
 });
 
@@ -85,40 +86,6 @@ function preventScroll(e) {
     return false;
 }
 
-async function loadSVGImage(img) {
-    if (loadedImages[img.id]) {
-        console.log(`${img.id} already loaded, skipping.`);
-        return;
-    }
-    try {
-        await loadLocalSVGImage(img.id, img.path, img.coordinates);
-        loadedImages[img.id] = true;
-        console.log(`Loaded ${img.id}`);
-    } catch (error) {
-        console.error(`Failed to load ${img.id}:`, error);
-        loadedImages[img.id] = false;
-    }
-}
-function checkAllSVGsLoaded() {
-    const loadedCount = Object.values(loadedImages).filter(Boolean).length;
-    const totalCount = svgImages.length;
-    
-    // const allLoaded = loadedCount === totalCount;
-    // console.log(`Loaded ${loadedCount} out of ${totalCount} SVGs. All loaded: ${allLoaded}`);
-    return loadedCount;
-}
-async function loadSVGImages(count = 1) {
-    const startIndex = lastLoadedIndex + 1;
-    const endIndex = Math.min(startIndex + count, svgImages.length);
-
-    for (let i = startIndex; i < endIndex; i++) {
-        await loadSVGImage(svgImages[i]);
-        lastLoadedIndex = i;
-    }
-
-    console.log(`Loaded images from index ${startIndex} to ${lastLoadedIndex}`);
-    return checkAllSVGsLoaded();
-}
 
 function lockScroll(){
     document.body.style.overflowY = 'hidden';
@@ -126,32 +93,6 @@ function lockScroll(){
     document.addEventListener('touchmove', preventScroll, { passive: false });
 }
 
-setTimeout(() => {
-    elements.forEach(element => {
-        if(element.id !== "loading-screen" && !element.classList.contains("spinner") && !element.classList.contains("spinner-text")){
-            element.classList.remove('hidden-content');
-        }
-    })
-}, 1000)
-
-// Disable Scroll until ok is clicked
-// lockScroll();
-// Unlock page (remove warning) on button click
-document.getElementById('unlockScrollButton').addEventListener('click', function() {
-    if(!isMobileScreen()){
-        snapScroll();
-    }
-    document.removeEventListener('wheel', preventScroll);
-    document.removeEventListener('touchmove', preventScroll);
-    document.querySelector(".warning").style.opacity = 0;
-    setTimeout(() => {
-        document.querySelector(".warning").style.display = "none";
-    }, 1000)
-    // document.getElementById("scrollDown").addEventListener("click", () => {
-    //     scrollToSection(1);
-    // })
-    this.disabled = true;
-});
 function showLoading(){
     let showContent = false;
 
@@ -184,41 +125,42 @@ function showLoading(){
 
 
     // Function to watch areAllSVGsLoaded and dispatch event when true
-    // function watchSVGLoading() {
-    //     if (areAllSVGsLoaded()) {
-    //         const event = new CustomEvent(SVG_LOADED_EVENT);
-    //         document.dispatchEvent(event);
-    //         hideLoadingScreen();
-    //         // Disable Scroll until ok is clicked
-    //         // lockScroll();
-    //         // Unlock page (remove warning) on button click
-    //         document.getElementById('unlockScrollButton').addEventListener('click', function() {
-    //             snapScroll();
-    //             document.removeEventListener('wheel', preventScroll);
-    //             document.removeEventListener('touchmove', preventScroll);
-    //             document.querySelector(".warning").style.opacity = 0;
-    //             setTimeout(() => {
-    //                 document.querySelector(".warning").style.display = "none";
-    //             }, 1000)
-    //             // document.getElementById("scrollDown").addEventListener("click", () => {
-    //             //     scrollToSection(1);
-    //             // })
-    //             this.disabled = true;
-    //         });
-    //     } else {
-    //         requestAnimationFrame(watchSVGLoading);
-    //     }
-    // }
+    function watchSVGLoading() {
+        if (areAllMainImagesLoaded()) {
+            const event = new CustomEvent(SVG_LOADED_EVENT);
+            document.dispatchEvent(event);
+            hideLoadingScreen();
+            // Disable Scroll until ok is clicked
+            lockScroll();
+            // Unlock page (remove warning) on button click
+            document.getElementById('unlockScrollButton').addEventListener('click', function() {
+                if(!isMobileScreen()){
+                    snapScroll();
+                }
+                document.removeEventListener('wheel', preventScroll);
+                document.removeEventListener('touchmove', preventScroll);
+                document.querySelector(".warning").style.opacity = 0;
+                setTimeout(() => {
+                    document.querySelector(".warning").style.display = "none";
+                }, 1000)
+                // document.getElementById("scrollDown").addEventListener("click", () => {
+                //     scrollToSection(1);
+                // })
+                this.disabled = true;
+            });
+        } else {
+            requestAnimationFrame(watchSVGLoading);
+        }
+    }
 
     // lockScroll();
     // Hide content on document load
     updateContentVisibility();
 
     // Show Loading Screen Until Assets are Loaded
-    // showLoadingScreen();
 
     // Show content on assets load
-    // watchSVGLoading();
+    watchSVGLoading();
 }
 
 // Hide the loading screen
@@ -279,102 +221,125 @@ const pauseVideo = (container) => {
 
 let loadedImages = {};
 
-async function loadLocalSVGImage(name, path, coordinates) {
-    // Fetch the SVG image as a text string
-    let response = await fetch(path);
-    let svgText = await response.text();
+// async function loadLocalSVGImage(name, path, coordinates) {
+//     // Fetch the SVG image as a text string
+//     let response = await fetch(path);
+//     let svgText = await response.text();
 
-    // Parse the SVG to get its dimensions
-    let parser = new DOMParser();
-    let svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-    let svgElement = svgDoc.documentElement;
+//     // Parse the SVG to get its dimensions
+//     let parser = new DOMParser();
+//     let svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+//     let svgElement = svgDoc.documentElement;
 
-    // Ensure SVG has explicit width and height
-    if (!svgElement.hasAttribute('width')) svgElement.setAttribute('width', '100%');
-    if (!svgElement.hasAttribute('height')) svgElement.setAttribute('height', '100%');
+//     // Ensure SVG has explicit width and height
+//     if (!svgElement.hasAttribute('width')) svgElement.setAttribute('width', '100%');
+//     if (!svgElement.hasAttribute('height')) svgElement.setAttribute('height', '100%');
 
-    let viewBox = svgElement.getAttribute('viewBox');
-    let [, , width, height] = viewBox ? viewBox.split(' ').map(Number) : [null, null, 24, 24];
+//     let viewBox = svgElement.getAttribute('viewBox');
+//     let [, , width, height] = viewBox ? viewBox.split(' ').map(Number) : [null, null, 24, 24];
 
-    // Create an ultra high-resolution canvas
-    let scale = 16; // Increased for maximum quality
-    let canvas = document.createElement('canvas');
-    canvas.width = width * scale;
-    canvas.height = height * scale;
-    let ctx = canvas.getContext('2d', { alpha: true, willReadFrequently: true });
+//     // Create an ultra high-resolution canvas
+//     let scale = 16; // Increased for maximum quality
+//     let canvas = document.createElement('canvas');
+//     canvas.width = width * scale;
+//     canvas.height = height * scale;
+//     let ctx = canvas.getContext('2d', { alpha: true, willReadFrequently: true });
 
-    // Enable crisp edges rendering
-    ctx.imageSmoothingEnabled = false;
+//     // Enable crisp edges rendering
+//     ctx.imageSmoothingEnabled = false;
 
-    // Modify SVG for better rendering
-    svgElement.setAttribute('width', canvas.width);
-    svgElement.setAttribute('height', canvas.height);
+//     // Modify SVG for better rendering
+//     svgElement.setAttribute('width', canvas.width);
+//     svgElement.setAttribute('height', canvas.height);
 
-    // Convert SVG to data URL
-    let svgBlob = new Blob([svgElement.outerHTML], { type: 'image/svg+xml' });
-    let url = URL.createObjectURL(svgBlob);
+//     // Convert SVG to data URL
+//     let svgBlob = new Blob([svgElement.outerHTML], { type: 'image/svg+xml' });
+//     let url = URL.createObjectURL(svgBlob);
 
-    // Load the SVG onto the canvas
-    return new Promise((resolve, reject) => {
-        let img = new Image();
-        img.onload = () => {
-            // Use a technique to render sharp edges
-            ctx.drawImage(img, 0, 0);
-            let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            ctx.putImageData(imageData, 0, 0);
+//     // Load the SVG onto the canvas
+//     return new Promise((resolve, reject) => {
+//         let img = new Image();
+//         img.onload = () => {
+//             // Use a technique to render sharp edges
+//             ctx.drawImage(img, 0, 0);
+//             let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+//             ctx.putImageData(imageData, 0, 0);
 
-            URL.revokeObjectURL(url);
+//             URL.revokeObjectURL(url);
 
-            // Add the maximum quality image to the map
-            if (!map.hasImage(name)) {
-                map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height), { 
-                    pixelRatio: scale,
-                    sdf: false
-                });
-                if(!map.getSource(name)){
-                    map.addSource(name, {
-                        'type': 'geojson',
-                        'data': {
-                            'type': 'FeatureCollection',
-                            'features': [{
-                                'type': 'Feature',
-                                'geometry': {
-                                    'type': 'Point',
-                                    'coordinates': coordinates
-                                }
-                            }]
-                        }
-                    });
-                }
-            }
-            resolve();
-        };
-        img.onerror = reject;
-        img.src = url;
-    });
+//             // Add the maximum quality image to the map
+//             if (!map.hasImage(name)) {
+//                 map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height), { 
+//                     pixelRatio: scale,
+//                     sdf: false
+//                 });
+//                 if(!map.getSource(name)){
+//                     map.addSource(name, {
+//                         'type': 'geojson',
+//                         'data': {
+//                             'type': 'FeatureCollection',
+//                             'features': [{
+//                                 'type': 'Feature',
+//                                 'geometry': {
+//                                     'type': 'Point',
+//                                     'coordinates': coordinates
+//                                 }
+//                             }]
+//                         }
+//                     });
+//                 }
+//             }
+//             resolve();
+//         };
+//         img.onerror = reject;
+//         img.src = url;
+//     });
+// }
+
+// async function preloadSVGImages() {
+//   try {
+//     const loadPromises = svgImages.map(async (img) => {
+//       try {
+//         await loadLocalSVGImage(img.id, img.path, img.coordinates);
+//         loadedImages[img.id] = true;
+//       } catch (error) {
+//         console.error(`Failed to load ${img.id}:`, error);
+//         loadedImages[img.id] = false;
+//       }
+//     });
+
+//     await Promise.all(loadPromises);
+//   } catch (error) {
+//     console.error('Error in preloading SVGs:', error);
+//   }
+// }
+
+
+async function preloadMainImages() {
+    try {
+      const loadPromises = svgImages.map(async (img) => {
+        try {
+          await loadLocalImage(img.id, img.path, img.coordinates);
+          loadedImages[img.id] = true;
+        } catch (error) {
+          console.error(`Failed to load ${img.id}:`, error);
+          loadedImages[img.id] = false;
+        }
+      });
+  
+      await Promise.all(loadPromises);
+    } catch (error) {
+      console.error('Error in preloading SVGs:', error);
+    }
 }
 
-async function preloadSVGImages() {
-  try {
-    const loadPromises = svgImages.map(async (img) => {
-      try {
-        await loadLocalSVGImage(img.id, img.path, img.coordinates);
-        loadedImages[img.id] = true;
-      } catch (error) {
-        console.error(`Failed to load ${img.id}:`, error);
-        loadedImages[img.id] = false;
-      }
-    });
-
-    await Promise.all(loadPromises);
-  } catch (error) {
-    console.error('Error in preloading SVGs:', error);
-  }
-}
-
-function areAllSVGsLoaded() {
+function areAllMainImagesLoaded(){
     return svgImages.every(img => loadedImages[img.id] === true);
 }
+
+// function areAllSVGsLoaded() {
+//     return svgImages.every(img => loadedImages[img.id] === true);
+// }
 
 async function loadLocalImage(name, path, coordinates){
     let image = await map.loadImage(path);
@@ -401,6 +366,7 @@ async function loadLocalImage(name, path, coordinates){
     }
 }
 
+
 function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
     if(!map.getLayer(name) && map.getSource(name)){
         if(before){
@@ -410,14 +376,7 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                 'source': name,
                 'layout': {
                     'icon-image': name,
-                    'icon-size': ['interpolate', ['linear'], ['zoom'],
-                        9, size / 1.5,
-                        13, size * 1.5,
-                        14, size * 4,
-                        15, size * 8,
-                    ],
-                    'icon-allow-overlap': true,
-                    'icon-anchor': 'center',
+                    'icon-size': size
                 }
             }, before);
         }else{
@@ -427,14 +386,7 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                 'source': name,
                 'layout': {
                     'icon-image': name,
-                    'icon-size': ['interpolate', ['linear'], ['zoom'],
-                        9, size / 1.5,
-                        13, size * 1.5,
-                        14, size * 4,
-                        15, size * 8,
-                    ],
-                    'icon-allow-overlap': true,
-                    'icon-rotate': rotation
+                    'icon-size': size
                 }
             });
         }
@@ -444,12 +396,60 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
             opacity: 1,
             duration: duration,
             onUpdate: function () {
-              map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
+                map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
             },
         });
     }
 }
 
+// function addSVGImageLayer(name, size, rotation=0, duration=0.1, before=false){
+//     if(!map.getLayer(name) && map.getSource(name)){
+//         if(before){
+//             map.addLayer({
+//                 'id': name,
+//                 'type': 'symbol',
+//                 'source': name,
+//                 'layout': {
+//                     'icon-image': name,
+//                     'icon-size': ['interpolate', ['linear'], ['zoom'],
+//                         9, size / 1.5,
+//                         13, size * 1.5,
+//                         14, size * 4,
+//                         15, size * 8,
+//                     ],
+//                     'icon-allow-overlap': true,
+//                     'icon-anchor': 'center',
+//                 }
+//             }, before);
+//         }else{
+//             map.addLayer({
+//                 'id': name,
+//                 'type': 'symbol',
+//                 'source': name,
+//                 'layout': {
+//                     'icon-image': name,
+//                     'icon-size': ['interpolate', ['linear'], ['zoom'],
+//                         9, size / 1.5,
+//                         13, size * 1.5,
+//                         14, size * 4,
+//                         15, size * 8,
+//                     ],
+//                     'icon-allow-overlap': true,
+//                     'icon-rotate': rotation
+//                 }
+//             });
+//         }
+//     }
+//     if(map.getLayer(name)){
+//         return gsap.to({ opacity: 0 }, {
+//             opacity: 1,
+//             duration: duration,
+//             onUpdate: function () {
+//               map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
+//             },
+//         });
+//     }
+// }
 
 function getCoordinates(id){
     if(isMobileScreen()){
@@ -474,24 +474,23 @@ function getCoordinates(id){
 }
 
 const svgImages = [
-    { id: 'rafah', path: 'assets/rafah.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'rafah-two', path: 'assets/rafah_2.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'rafah-three',path:  './assets/rafah_3.svg', coordinates: [34.242789, 31.308767]},
-    { id: 'south-one', path: 'assets/south_1.svg', coordinates: getCoordinates('south-one')},
-    { id: 'south-two', path: 'assets/south_2.svg', coordinates: getCoordinates('south-one')},
-    { id: 'south-three', path: 'assets/south_3.svg', coordinates: getCoordinates("south-three")},
-    { id: 'mawasi', path: 'assets/mawasi.svg', coordinates: [34.265655, 31.349355]},
-    { id: 'mawasi-two', path: 'assets/mawasi_2.svg', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-two-two', path: 'assets/mawasi_2_2.svg', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-three', path: 'assets/mawasi_3.svg', coordinates: [34.282923, 31.373260]},
-    { id: 'mawasi-four', path: 'assets/mawasi_4.svg', coordinates: [34.296442, 31.375787]},
-    { id: 'mawasi-five', path: 'assets/mawasi_5.svg', coordinates: [34.296442, 31.375787]},
-    { id: 'mawasi-six', path: 'assets/mawasi_6.svg', coordinates: [34.244100, 31.334291]},
-    { id: 'mawasi-seven', path: 'assets/mawasi_7.svg', coordinates: [34.244100, 31.334291]},
-    { id: 'mawasi-eight', path: 'assets/mawasi_8.svg', coordinates: getCoordinates('mawasi-eight')},
+    { id: 'rafah', path: 'assets/imagery/rafah.png', coordinates: [34.242789, 31.308767]},
+    { id: 'rafah-two', path: 'assets/imagery/rafah_2.png', coordinates: [34.242789, 31.308767]},
+    { id: 'rafah-three',path:  'assets/imagery/rafah_3.png', coordinates: [34.242789, 31.308767]},
+    { id: 'south-one', path: 'assets/imagery/south_1.png', coordinates: getCoordinates('south-one')},
+    { id: 'south-two', path: 'assets/imagery/south_2.png', coordinates: getCoordinates('south-one')},
+    { id: 'south-three', path: 'assets/imagery/south_3.png', coordinates: getCoordinates("south-three")},
+    { id: 'mawasi', path: 'assets/imagery/mawasi.png', coordinates: [34.265655, 31.349355]},
+    { id: 'mawasi-two', path: 'assets/imagery/mawasi_2.png', coordinates: [34.300712, 31.377954]},
+    { id: 'mawasi-two-two', path: 'assets/imagery/mawasi_2_2.png', coordinates: [34.300712, 31.377954]},
+    { id: 'mawasi-three', path: 'assets/imagery/mawasi_3.png', coordinates: [34.282923, 31.373260]},
+    { id: 'mawasi-four', path: 'assets/imagery/mawasi_4.png', coordinates: [34.296442, 31.375787]},
+    { id: 'mawasi-five', path: 'assets/imagery/mawasi_5.png', coordinates: [34.296442, 31.375787]},
+    { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.244100, 31.334291]},
+    { id: 'mawasi-seven', path: 'assets/imagery/mawasi_7.png', coordinates: [34.244100, 31.334291]},
+    { id: 'mawasi-eight', path: 'assets/imagery/mawasi_8.png', coordinates: getCoordinates('mawasi-eight')},
 ];
 
-// 31.39533,34.46991
 const gazaCoordinates = [34.46991,31.39533];
 
 function isMobileScreen() {
@@ -531,12 +530,8 @@ const map = new maplibregl.Map({
 });
 
 
-preloadSVGImages();
 
 map.on('load', async () => {
-    setTimeout(() => {
-        hideLoadingScreen();
-    }, 2000);
     map.fitBounds(getGazaBounds(), {
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
         maxZoom: 15, 
@@ -659,7 +654,7 @@ map.on('load', async () => {
             y: 200
         });    
         let tl;
-        if(true){
+        if(areAllMainImagesLoaded){
             ScrollTrigger.create({
                 trigger: container,
                 start: "top 50%",
@@ -796,8 +791,48 @@ map.on('load', async () => {
                             tl.to("#three-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
                             tl.from("#three-two .content-child", {y: 100, duration: 0.5})
                             
+                            
+
+                            
+
+                            // const textSource = {
+                            //     type: 'geojson',
+                            //     data: {
+                            //         type: 'FeatureCollection',
+                            //         features: [
+                            //             {
+                            //                 type: 'Feature',
+                            //                 geometry: {
+                            //                     type: 'Point',
+                            //                     coordinates: [34.242789, 31.308767], // Example coordinates [longitude, latitude]
+                            //                 },
+                            //                 properties: {
+                            //                     title: 'Your Text Here'
+                            //                 }
+                            //             }
+                            //         ]
+                            //     }
+                            // };
+
+                            // map.addSource('textSource', textSource);
+                            // map.addLayer({
+                            //     id: 'textLayer',
+                            //     type: 'symbol',
+                            //     source: 'textSource',
+                            //     layout: {
+                            //         'text-field': ['get', 'title'],
+                            //         'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                            //         'text-size': 20,
+                            //         'text-offset': [0, 0.6],
+                            //         'text-anchor': 'top'
+                            //     },
+                            //     paint: {
+                            //         'text-color': '#000000'
+                            //     }
+                            // });
+
                             // add the image
-                            tl.add(addImageLayer("rafah", getIconSize(2)))
+                            tl.add(addImageLayer("rafah", getIconSize(1)))
                             map.flyTo({
                                 center: [34.242789, 31.308767],
                                 essential: true,
@@ -812,8 +847,8 @@ map.on('load', async () => {
                                 essential: true,
                                 zoom: 14
                             });
+                            tl.add(addImageLayer("rafah-two", getIconSize(1)))
                             // add the third image
-                            tl.add(addImageLayer("rafah-two", getIconSize(2)))
                             map.flyTo({
                                 center: [34.242789, 31.308767],
                                 essential: true,
@@ -824,9 +859,7 @@ map.on('load', async () => {
                             // Remove second image
                             tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
                             // add the third image
-                            tl.add(addImageLayer("rafah-three", getIconSize(2)))
-
-                            // Load South images
+                            tl.add(addImageLayer("rafah-three", getIconSize(1)))
                             break;
                         case "four":
                             tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -845,14 +878,15 @@ map.on('load', async () => {
                                 essential: true,
                                 zoom: 13.5
                             })
-                            tl.add(addImageLayer("south-one", getIconSize(3.5)))
+                            tl.add(addImageLayer("south-one", getIconSize(1)))
                             break;
                         case "five-two":
-                            tl.add(addImageLayer("south-two", getIconSize(3.5)))
+                            tl.add(addImageLayer("south-two", getIconSize(1)))
                             tl.add(removePreviousLayer("south-one", "icon-opacity"));
                             break;
                         case "five-three":
-                            tl.add(addImageLayer("south-three", getIconSize(3.5)))
+                            logCurrentLayers();
+                            tl.add(addImageLayer("south-three", getIconSize(1)))
                             break;
                         case "six":
                             tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -890,13 +924,13 @@ map.on('load', async () => {
                                     zoom: 11,
                                     center: [34.267808, 31.350360]
                                 })
-                                tl.add(addImageLayer("mawasi", 1.3))
+                                tl.add(addImageLayer("mawasi", 0.5))
                             }else{
                                 map.flyTo({
                                     zoom: 12,
                                     center: [34.267808, 31.350360]
                                 })
-                                tl.add(addImageLayer("mawasi", 2.2))
+                                tl.add(addImageLayer("mawasi", 0.8))
                             }
                             
                             break;
@@ -1014,7 +1048,7 @@ map.on('load', async () => {
                                     center: [34.285983, 31.372169]
                                 })
                             }else{
-                                tl.add(addImageLayer("mawasi-three", getIconSize(1.9)))
+                                tl.add(addImageLayer("mawasi-three", getIconSize(1)))
                                 map.flyTo({
                                     zoom: 12,
                                     essential: true,
@@ -1024,7 +1058,7 @@ map.on('load', async () => {
                             
                             break;
                         case "seventeen":
-                            tl.add(addImageLayer("mawasi-four", getIconSize(2))) 
+                            tl.add(addImageLayer("mawasi-four", getIconSize(1))) 
                             // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
                             map.flyTo({
                                 zoom: 14,
@@ -1034,7 +1068,7 @@ map.on('load', async () => {
                             break;
                         case "eighteen":
                             tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
-                            tl.add(addImageLayer("mawasi-five", getIconSize(2))) 
+                            tl.add(addImageLayer("mawasi-five", getIconSize(1))) 
                             break;
                         case "eighteen-two":
                             tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1098,7 +1132,7 @@ map.on('load', async () => {
                             tl.add(showMap());
 
                             // ,
-                            tl.add(addImageLayer("mawasi-six", getIconSize(3))) 
+                            tl.add(addImageLayer("mawasi-six", getIconSize(1))) 
                             map.flyTo({
                                 zoom: 14,
                                 essential: true,
@@ -1107,11 +1141,11 @@ map.on('load', async () => {
                             break;
                         case "twentynine":
                             tl.add(removePreviousLayer("mawasi-six", 'icon-opacity'))
-                            tl.add(addImageLayer("mawasi-seven", getIconSize(3))) 
+                            tl.add(addImageLayer("mawasi-seven", getIconSize(1))) 
                             break;
                         case "thirty":
                             tl.add(removePreviousLayer("mawasi-seven", 'icon-opacity'))
-                            tl.add(addImageLayer("mawasi-eight", getIconSize(3))) 
+                            tl.add(addImageLayer("mawasi-eight", getIconSize(1))) 
                             // ,,,
                             map.flyTo({
                                 zoom: 15,
