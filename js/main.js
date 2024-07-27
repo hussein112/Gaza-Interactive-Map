@@ -131,7 +131,7 @@ function showLoading(){
             document.dispatchEvent(event);
             hideLoadingScreen();
             // Disable Scroll until ok is clicked
-            lockScroll();
+            // lockScroll();
             // Unlock page (remove warning) on button click
             document.getElementById('unlockScrollButton').addEventListener('click', function() {
                 if(!isMobileScreen()){
@@ -376,7 +376,14 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                 'source': name,
                 'layout': {
                     'icon-image': name,
-                    'icon-size': size
+                    'icon-size': ['interpolate', ['linear'], ['zoom'],
+                        9, size / 1.5,
+                        13, size * 1.5,
+                        14, size * 4,
+                        15, size * 8,
+                    ],
+                    'icon-allow-overlap': true,
+                    'icon-anchor': 'center',
                 }
             }, before);
         }else{
@@ -386,7 +393,14 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                 'source': name,
                 'layout': {
                     'icon-image': name,
-                    'icon-size': size
+                    'icon-size': ['interpolate', ['linear'], ['zoom'],
+                        9, size / 1.5,
+                        13, size * 1.5,
+                        14, size * 4,
+                        15, size * 8,
+                    ],
+                    'icon-allow-overlap': true,
+                    'icon-anchor': 'center',
                 }
             });
         }
@@ -483,12 +497,14 @@ const svgImages = [
     { id: 'mawasi', path: 'assets/imagery/mawasi.png', coordinates: [34.265655, 31.349355]},
     { id: 'mawasi-two', path: 'assets/imagery/mawasi_2.png', coordinates: [34.300712, 31.377954]},
     { id: 'mawasi-two-two', path: 'assets/imagery/mawasi_2_2.png', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-three', path: 'assets/imagery/mawasi_3.png', coordinates: [34.282923, 31.373260]},
+    // ,
+    { id: 'mawasi-three', path: 'assets/imagery/mawasi_3.png', coordinates: [34.284616, 31.368566]},
     { id: 'mawasi-four', path: 'assets/imagery/mawasi_4.png', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-five', path: 'assets/imagery/mawasi_5.png', coordinates: [34.296442, 31.375787]},
-    { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.244100, 31.334291]},
-    { id: 'mawasi-seven', path: 'assets/imagery/mawasi_7.png', coordinates: [34.244100, 31.334291]},
-    { id: 'mawasi-eight', path: 'assets/imagery/mawasi_8.png', coordinates: getCoordinates('mawasi-eight')},
+    // ,
+    { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.230671, 31.330667]},
+    { id: 'mawasi-seven', path: 'assets/imagery/mawasi_7.png', coordinates: [34.230671, 31.330667]},
+    { id: 'mawasi-eight', path: 'assets/imagery/mawasi_8.png', coordinates: [34.230671, 31.330667]},
 ];
 
 const gazaCoordinates = [34.46991,31.39533];
@@ -518,7 +534,7 @@ function getIconSize(size, accurate = false){
     if(accurate){
         return isMobileScreen() ? size - 0.2 : size;
     }
-    return isMobileScreen() ? (size / 2) - 0.2 : size;
+    return isMobileScreen() ? size  - 0.1 : size;
 }
 
 const map = new maplibregl.Map({
@@ -529,7 +545,11 @@ const map = new maplibregl.Map({
     interactive: false
 });
 
-
+function removeHalf(){
+    for(let i = 0; i < (svgImages.length / 2); i++){
+        removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
+    }
+}
 
 map.on('load', async () => {
     map.fitBounds(getGazaBounds(), {
@@ -779,7 +799,7 @@ map.on('load', async () => {
                             }, false))
                             // Show arrows 3
                             tl.add(await loadLocalImage('arrow-3', 'assets/map_arrow_three.png', [34.26836, 31.28998]));
-                            tl.add(addImageLayer("arrow-3", getIconSize(0.8, true)))
+                            tl.add(addImageLayer("arrow-3", getIconSize(0.9, true)))
                             break;
                         case "three-two":
                             tl.add(removePreviousLayer("evac-area-three-one", "fill-opacity"))
@@ -832,7 +852,7 @@ map.on('load', async () => {
                             // });
 
                             // add the image
-                            tl.add(addImageLayer("rafah", getIconSize(1)))
+                            tl.add(addImageLayer("rafah", getIconSize(0.3)))
                             map.flyTo({
                                 center: [34.242789, 31.308767],
                                 essential: true,
@@ -842,24 +862,16 @@ map.on('load', async () => {
                         case "three-three":
                             // Remove Second Image
                             tl.add(removePreviousLayer('rafah', 'icon-opacity'));
-                            map.flyTo({
-                                center: [34.242789, 31.308767],
-                                essential: true,
-                                zoom: 14
-                            });
-                            tl.add(addImageLayer("rafah-two", getIconSize(1)))
+                            
+                            tl.add(addImageLayer("rafah-two", getIconSize(0.3)))
                             // add the third image
-                            map.flyTo({
-                                center: [34.242789, 31.308767],
-                                essential: true,
-                                zoom: 14
-                            });
+                           
                             break;
                         case "three-four":
                             // Remove second image
                             tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
                             // add the third image
-                            tl.add(addImageLayer("rafah-three", getIconSize(1)))
+                            tl.add(addImageLayer("rafah-three", getIconSize(0.2)))
                             break;
                         case "four":
                             tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -878,15 +890,14 @@ map.on('load', async () => {
                                 essential: true,
                                 zoom: 13.5
                             })
-                            tl.add(addImageLayer("south-one", getIconSize(1)))
+                            tl.add(addImageLayer("south-one", getIconSize(0.3)))
                             break;
                         case "five-two":
-                            tl.add(addImageLayer("south-two", getIconSize(1)))
+                            tl.add(addImageLayer("south-two", getIconSize(0.3)))
                             tl.add(removePreviousLayer("south-one", "icon-opacity"));
                             break;
                         case "five-three":
-                            logCurrentLayers();
-                            tl.add(addImageLayer("south-three", getIconSize(1)))
+                            tl.add(addImageLayer("south-three", getIconSize(0.3)))
                             break;
                         case "six":
                             tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -930,7 +941,7 @@ map.on('load', async () => {
                                     zoom: 12,
                                     center: [34.267808, 31.350360]
                                 })
-                                tl.add(addImageLayer("mawasi", 0.8))
+                                tl.add(addImageLayer("mawasi", 0.62))
                             }
                             
                             break;
@@ -988,10 +999,10 @@ map.on('load', async () => {
                                 essential: true,
                                 center: [34.300712, 31.377954]
                             })
-                            tl.add(addImageLayer("mawasi-two", getIconSize(1)))
+                            tl.add(addImageLayer("mawasi-two", getIconSize(0.3)))
                             break;
                         case "eleven-two":
-                            tl.add(addImageLayer("mawasi-two-two", getIconSize(1)))
+                            tl.add(addImageLayer("mawasi-two-two", getIconSize(0.3)))
                             break;
                         case "twelve":
                             // Hide The Map
@@ -1048,9 +1059,9 @@ map.on('load', async () => {
                                     center: [34.285983, 31.372169]
                                 })
                             }else{
-                                tl.add(addImageLayer("mawasi-three", getIconSize(1)))
+                                tl.add(addImageLayer("mawasi-three", 0.36))
                                 map.flyTo({
-                                    zoom: 12,
+                                    zoom: 13,
                                     essential: true,
                                     center: [34.285983, 31.372169]
                                 })
@@ -1058,7 +1069,7 @@ map.on('load', async () => {
                             
                             break;
                         case "seventeen":
-                            tl.add(addImageLayer("mawasi-four", getIconSize(1))) 
+                            tl.add(addImageLayer("mawasi-four", getIconSize(0.3))) 
                             // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
                             map.flyTo({
                                 zoom: 14,
@@ -1068,7 +1079,7 @@ map.on('load', async () => {
                             break;
                         case "eighteen":
                             tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
-                            tl.add(addImageLayer("mawasi-five", getIconSize(1))) 
+                            tl.add(addImageLayer("mawasi-five", getIconSize(0.3))) 
                             break;
                         case "eighteen-two":
                             tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1132,7 +1143,7 @@ map.on('load', async () => {
                             tl.add(showMap());
 
                             // ,
-                            tl.add(addImageLayer("mawasi-six", getIconSize(1))) 
+                            tl.add(addImageLayer("mawasi-six", getIconSize(0.28))) 
                             map.flyTo({
                                 zoom: 14,
                                 essential: true,
@@ -1141,16 +1152,16 @@ map.on('load', async () => {
                             break;
                         case "twentynine":
                             tl.add(removePreviousLayer("mawasi-six", 'icon-opacity'))
-                            tl.add(addImageLayer("mawasi-seven", getIconSize(1))) 
+                            tl.add(addImageLayer("mawasi-seven", getIconSize(0.28))) 
                             break;
                         case "thirty":
                             tl.add(removePreviousLayer("mawasi-seven", 'icon-opacity'))
-                            tl.add(addImageLayer("mawasi-eight", getIconSize(1))) 
-                            // ,,,
+                            tl.add(addImageLayer("mawasi-eight", getIconSize(0.28))) 
+                            // ,
                             map.flyTo({
                                 zoom: 15,
                                 essential: true,
-                                center: [34.246495, 31.334916]
+                                center: [34.238093, 31.333118]
                             })
                             break;
                         case "thirtyone":
@@ -1162,6 +1173,7 @@ map.on('load', async () => {
                                 duration: 1000
                             });
                             tl.add(removePreviousLayer("mawasi-eight", 'icon-opacity'))
+                            removeHalf();
                             break;
                     }
                 },
@@ -1219,14 +1231,8 @@ map.on('load', async () => {
                             map.flyTo({
                                 zoom: 15,
                                 essential: true,
-                                center: [34.246495, 31.334916]
+                                center: [34.238093, 31.333118]
                             })
-                            // Old in case of errors
-                            // map.flyTo({
-                            //     zoom: 14,
-                            //     essential: true,
-                            //     center: [34.244100, 31.334291]
-                            // })
                             break;
                         case "nineteen":
                             map.flyTo({
@@ -1276,7 +1282,7 @@ map.on('load', async () => {
                             map.flyTo({
                                 center: [34.27204, 31.23714],
                                 essential: true,
-                                zoom: 13
+                                zoom: 13.5
                             })
                             break;
                         case "four":
