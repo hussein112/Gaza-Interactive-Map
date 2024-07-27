@@ -1173,7 +1173,7 @@ map.on('load', async () => {
                                 duration: 1000
                             });
                             tl.add(removePreviousLayer("mawasi-eight", 'icon-opacity'))
-                            removeHalf();
+                            // removeHalf();
                             break;
                     }
                 },

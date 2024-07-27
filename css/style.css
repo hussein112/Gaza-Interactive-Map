@@ -103,12 +103,14 @@ a{
 
 
 .top{
-    top: 10%;
+    top: 5%;
 }
 
 .top-20{
     top: 20%;
 }
+
+
 
 .left{
     left: 5%;
@@ -222,6 +224,7 @@ a{
 
 
 .content-container {
+    padding: 5px 0;
     height: 100vh;
     display: flex;
     align-items: center;
@@ -230,12 +233,10 @@ a{
 }
 
 
-@media(max-width: 992px){
-    .content-container.single{
-        display: block;
-        margin-top: 20px;
-        padding-right: 20px;
-    }
+.content-container.single{
+    /* margin-top: 30px; */
+    padding-right: 20px;
+    align-items: start;
 }
 
 
@@ -527,6 +528,20 @@ video{
     transform: translate(-50%, -50%);
 }
 
+.graphics .center-h{
+    width: 40%;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+}
+
+.graphics .center-h-error{
+    width: 40%;
+    top: 20%;
+    right: 0;
+    transform: translate(-50%, -20%);
+}
+
 .graphics .center-top{
     top: 0;
     left: 50%;
@@ -543,7 +558,7 @@ video{
 }
 
 .graphics .center-bottom{
-    bottom: 30%;
+    bottom: 28%;
     left: 50%;
     transform: translate(-50%, 30%);
 }
@@ -731,6 +746,8 @@ video{
 .arrow-left-center{
     top: -83px;
     left: 42%;
+    max-width: unset !important;
+    width: 200%;
 }
 
 @media (max-width: 772px){
@@ -831,11 +848,11 @@ video{
     transform: translate(-39%, 33%);
 }
 
-.refugee-camp-circle{
+/* .refugee-camp-circle{
     position: absolute;
     top: 27%;
     right: 72.7%;
-}
+} */
 
 
 .bomb-circle{
@@ -889,10 +906,13 @@ video{
     z-index: -1;
 }
 
+.aljazera{
+    width: 90% !important;
+}
 
 .gaza-map-on-video{
-    top: 33.6%;
-    left: 32.6%;
+    top: 10%;
+    left: 5%;
 }
 
 
