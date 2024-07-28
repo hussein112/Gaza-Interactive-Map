@@ -132,7 +132,7 @@ function showLoading(){
             // Unlock page (remove warning) on button click
             document.getElementById('unlockScrollButton').addEventListener('click', function() {
                 if(!isMobileScreen()){
-                    snapScroll();
+                    // snapScroll();
                 }
                 document.removeEventListener('wheel', preventScroll);
                 document.removeEventListener('touchmove', preventScroll);
@@ -676,10 +676,7 @@ map.on('load', async () => {
     containers.forEach((container, index) => {
         const childElements = Array.from(container.querySelectorAll('.content-child'));
     
-        gsap.set(childElements, {
-            opacity: 0,
-            y: 200
-        });    
+        gsap.set(childElements, {});    
         let tl;
         if(areAllMainImagesLoaded){
             ScrollTrigger.create({
@@ -690,14 +687,14 @@ map.on('load', async () => {
                 fastScrollEnd: true,
                 preventOverlaps: true,
                 onEnter: async () => {
-                    if(container.querySelector(".content-child")){
-                        if (container.id !== "two-three" && container.id !== "three-two" && container.id !== 'five' && container.id !== "nineteen" && container.id !== "fifteen" && container.id !== "twelve" && container.id !== "thirteen" && container.id !== "fourteen" && container.id !== "ten" && container.id !== "ten-two" && container.id !== "ten-three" && container.id !== "ten-four" && container.id !== "seven") {
-                            gsap.fromTo(childElements,
-                                { opacity: 0, y: 200 },
-                                { opacity: 1, y: 0, duration: 2, ease: 'power1.inOut', clearProps: "all" }
-                            );
-                        }
-                    }
+                    // if(container.querySelector(".content-child")){
+                    //     if (container.id !== "two-three" && container.id !== "three-two" && container.id !== 'five' && container.id !== "nineteen" && container.id !== "fifteen" && container.id !== "twelve" && container.id !== "thirteen" && container.id !== "fourteen" && container.id !== "ten" && container.id !== "ten-two" && container.id !== "ten-three" && container.id !== "ten-four" && container.id !== "seven") {
+                    //         gsap.fromTo(childElements,
+                    //             { opacity: 0, y: 200 },
+                    //             { opacity: 1, y: 0, duration: 2, ease: 'power1.inOut', clearProps: "all" }
+                    //         );
+                    //     }
+                    // }
                     
                     const currentId = container.id;
                     tl = gsap.timeline();
@@ -962,10 +959,11 @@ map.on('load', async () => {
                                 duration: 1000
                             });
                             break;
+                        case "nine":
+                            tl.add(hideMap());
+                            break;
                         case "ten": // Refugee Graphics
                             // Hide The Map
-                            tl.add(hideMap());
-
                             const images = document.querySelectorAll(".animated-image");
                             images.forEach(image => {
                                 tl.to(image, {visibility: 'visible', opacity: 1, duration: 0.1})
@@ -1002,20 +1000,20 @@ map.on('load', async () => {
                             tl.to("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
                             tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
                             map.flyTo({
-                                zoom: 14,
+                                zoom: 13,
                                 essential: true,
                                 center: [34.300712, 31.377954]
                             })
-                            tl.add(addImageLayer("mawasi-two", getIconSize(0.3)))
+                            tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
                             break;
                         case "eleven-two":
-                            tl.add(addImageLayer("mawasi-two-two", getIconSize(0.3)))
+                            tl.add(removePreviousLayer("mawasi-two", "icon-opacity"))
+                            tl.add(addImageLayer("mawasi-two-two", getIconSize(0.5)))
                             break;
                         case "twelve":
                             // Hide The Map
                             tl.add(hideMap());
 
-                            tl.add(removePreviousLayer("mawasi-two", "icon-opacity"))
                             tl.add(removePreviousLayer("mawasi-two-two", "icon-opacity"))
                             tl.to("#twelve .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
                             tl.from("#twelve .fixed", {y: 100, duration: 0.5, clearProps: "transform"})
@@ -1076,17 +1074,17 @@ map.on('load', async () => {
                             
                             break;
                         case "seventeen":
-                            tl.add(addImageLayer("mawasi-four", getIconSize(0.3))) 
+                            tl.add(addImageLayer("mawasi-four", getIconSize(0.4))) 
                             // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
                             map.flyTo({
-                                zoom: 14,
+                                zoom: 13.2,
                                 essential: true,
                                 center: [34.296442, 31.375787]
                             })
                             break;
                         case "eighteen":
                             tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
-                            tl.add(addImageLayer("mawasi-five", getIconSize(0.3))) 
+                            tl.add(addImageLayer("mawasi-five", getIconSize(0.4))) 
                             break;
                         case "eighteen-two":
                             tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1262,10 +1260,10 @@ map.on('load', async () => {
                             break;
                         case "twelve":
                             map.flyTo({
-                                zoom: 14,
+                                zoom: 13,
                                 essential: true,
                                 center: [34.300712, 31.377954]
-                            });
+                            })
                             break;
                         case "thirtyone":
                             if(isMobileScreen()){
@@ -1294,7 +1292,7 @@ map.on('load', async () => {
                          break;
                          case "eighteen-two":
                             map.flyTo({
-                                zoom: 14,
+                                zoom: 13.2,
                                 essential: true,
                                 center: [34.296442, 31.375787]
                             })

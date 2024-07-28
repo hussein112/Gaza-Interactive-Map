@@ -71,6 +71,14 @@ a{
 }
 
 
+#eighteen-two,
+#four,
+#six,
+#thirtyone,
+#thirtytwo{
+    text-align: center;
+}
+
 @media(max-width: 772px){
     .flexible{
         flex-wrap: wrap;
@@ -231,9 +239,14 @@ a{
 
 
 .content-container.single{
-    /* margin-top: 30px; */
+    margin-top: 200px;
     padding-right: 20px;
     align-items: start;
+}
+
+.single .content-child.left{
+    width: 30%;
+    left: 0;
 }
 
 
@@ -508,10 +521,16 @@ a{
 }
 
 video{
-    width: 75% !important;
     top: 50% !important;
     height: 80%;
     object-fit: cover;
+}
+
+
+@media (max-width: 576px){
+    video{
+        width: 75% !important;
+    }
 }
 
 .object-contain{
@@ -567,7 +586,12 @@ video{
     transform: translate(-50%, -20%);
 }
 
-@media (max-width: 576px){
+@media (min-width: 992px){
+    .center-h-error{
+        right: unset;
+        left: 50%;
+    }
+
     .center-h,
     .center-h-error{
         height: 400px !important;
@@ -624,13 +648,14 @@ video{
     }
 }
 
+
 .graphics .top-center{
-    top: 2%;
-    left: 0;
+    top: 15%;
+    left: 50%;
     width: 60%;
+    transform: translate(-50%, -20%);
     font-size: 25px;
     font-weight: bold;
-    text-align: right;
 }
 
 .graphics .top-moderate-center{
@@ -877,7 +902,7 @@ video{
 
 .scroll-down a::after{
     content: '';
-    background: url(/assets/scroll.svg) no-repeat;
+    background: url(assets/scroll.svg) no-repeat;
     position: absolute;
     bottom: -25%;
     left: 50%;
@@ -946,7 +971,8 @@ video{
 }
 
 .aljazera{
-    width: 90% !important;
+    width: 52% !important;
+    height: 50% !important;
 }
 
 @media(max-width: 576px){
@@ -956,8 +982,9 @@ video{
 }
 
 .gaza-map-on-video{
-    top: 10%;
-    left: 5%;
+    top: 25%;
+    left: 24%;
+    width: 80px;
 }
 
 
