@@ -8,17 +8,13 @@ body,
 }
 
 html{
-    direction: rtl;
     scroll-behavior: smooth;
+    direction: rtl;
 }
-
 
 body{
     background-color: #373737;
-    margin: 0;
-    padding: 0;
     overflow-x: hidden;
-    width: 100vw;
 }
 
 ::-webkit-scrollbar{
@@ -32,6 +28,7 @@ body{
     font-family: "Inter", sans-serif;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 a{
@@ -128,7 +125,7 @@ a{
 
 @media (max-width: 578px){
     .semi-bold{
-        font-size: 24px;
+        font-size: 18px;
     }
 }
 
@@ -271,7 +268,7 @@ a{
 @media (max-width: 992px){
     .content-container.right,
     .content-container.right-left {
-        margin-right: unset;
+        margin-right: 10px;
     }
 }
 
@@ -292,6 +289,12 @@ a{
     font-weight: 300;
 }
 
+@media(max-width: 576px){
+    .content-child,
+    .content-child-30{
+        font-size: 16px;
+    }
+}
 
 .content-container.bottom .content-child{
     margin-bottom: 50px;
@@ -309,15 +312,16 @@ a{
     }
 }
 
-.content-container.top .content-child{
-    /* transform: translateY(-100px); */
-}
-
-
 
 .content-child.image-with-caption{
     display: flex;
     align-items: end;
+}
+
+@media (max-width: 576px){
+    .content-child.image-with-caption{
+        justify-content: center;
+    }
 }
 
 .quote-general{
@@ -329,6 +333,7 @@ a{
 @media (max-width: 578px){
     .quote-general{
         width: 75%;
+        font-size: 16px;
     } 
 }
 
@@ -351,6 +356,13 @@ a{
     font-family: "Inter";
     left: -20%;
     bottom: 0;
+}
+
+@media (max-width: 576px){
+    .quote-general::before{
+        font-size: 100px;
+        bottom: 44%;
+    }
 }
 
 .quote-general .source{
@@ -423,7 +435,7 @@ a{
         font-size: 16px;
         position: absolute;
         top: 10%;
-        right: 0;
+        right: -32%;
         color: white;
     }
 }
@@ -452,6 +464,10 @@ a{
 @media (max-width: 576px){
     .content-child.image-with-caption blockquote{
         font-size: 16px;
+        bottom: 0;
+        width: 173%;
+        right: -13%;
+        transform: translate(13%, 67%);
     }
 }
 
@@ -463,7 +479,7 @@ a{
 
 @media (max-width: 576px){
     .content-child.image-with-caption blockquote span{
-        font-size: 16px;
+        font-size: 14px;
     }
 }
 
@@ -492,6 +508,8 @@ a{
 }
 
 video{
+    width: 75% !important;
+    top: 50% !important;
     height: 80%;
     object-fit: cover;
 }
@@ -528,6 +546,13 @@ video{
     transform: translate(-50%, -50%);
 }
 
+@media (max-width: 576px){
+    .graphics .center{
+        top: unset;
+        bottom: 0;
+    }
+}
+
 .graphics .center-h{
     width: 40%;
     top: 20%;
@@ -542,6 +567,14 @@ video{
     transform: translate(-50%, -20%);
 }
 
+@media (max-width: 576px){
+    .center-h,
+    .center-h-error{
+        height: 400px !important;
+        width: 50% !important;
+    }
+}
+
 .graphics .center-top{
     top: 0;
     left: 50%;
@@ -552,7 +585,7 @@ video{
     .graphics .center-top{
         top: 0;
         left: 20%;
-        transform: translate(-50%, 0);
+        transform: translate(-7%, 0);
         width: 72% !important;
     }
 }
@@ -624,6 +657,12 @@ video{
 .graphics .center-left{
     top: 50%;
     left: 5%;
+}
+
+@media (max-width: 576px){
+    .graphics .center-left{
+        width: fit-content !important;
+    }
 }
 
 .graphics .media-center-left{
@@ -910,6 +949,12 @@ video{
     width: 90% !important;
 }
 
+@media(max-width: 576px){
+    .aljazera{
+        object-fit: contain;
+    }
+}
+
 .gaza-map-on-video{
     top: 10%;
     left: 5%;
@@ -919,6 +964,14 @@ video{
 .animated-image{
     object-fit: contain;
 }
+
+@media (max-width: 572px){
+    .animated-image-1{
+        top: 50% !important;
+        width: 90% !important;
+    }
+}
+
 
 
 .animated-image,

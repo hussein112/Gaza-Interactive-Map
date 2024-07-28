@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css' />
     <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
+    <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
 </head>
 <body>
     <div id="loading-screen">
@@ -146,7 +147,7 @@
 
         <div id="ten" class="content-container center graphics fixed-graphics-3">
             <div class="content-child flexible">
-                <img src="./assets/migrations/damaged buildings.png" alt="Damaged Buildings in Gaza" class="z-background center h-25 animated-image">
+                <img src="./assets/migrations/damaged buildings.png" alt="Damaged Buildings in Gaza" class="z-background center h-25 animated-image animated-image-1">
                 <img src="./assets/migrations/people migrating.png" alt="Migration in Gaza" class="z-normal center-bottom h-25 animated-image">
                 <img src="./assets/migrations/map.png" alt="Migration in Gaza" class="z-normal top-right h-25 animated-image">
             </div>
@@ -207,7 +208,8 @@
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: left;
-                position: absolute;">
+                position: absolute;
+                background-position: center;">
             </div>
             <div class="text-graphics flexible center z-top">
                 <p>
@@ -225,7 +227,25 @@
                     </p>
                     <img class="arrow-bottom-left" src="./assets/icons/migration_arrow_4.svg" alt="">
                 </div>
-                <video width="320" height="240" class="center spice animated-video" controls>
+                <!-- <video
+                id="my-video"
+                class="video-js"
+                prepreload="auto" 
+                width="640"
+                height="264"
+                data-setup="{}"
+                >
+                <source src="assets/videos/1.mp4" type="video/mp4" />
+                <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a
+                web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank"
+                    >supports HTML5 video</a
+                >
+                </p>
+            </video> -->
+
+                <video preload="auto" width="320" height="240" class="center spice animated-video" controls>
                     <source src="./assets/videos/1.mp4" type="video/mp4">
                 </video>
             </div>
@@ -268,7 +288,7 @@
 
         <div id="nineteen" class="content-container center graphics">
             <div class="content-child flexible">
-                <video width="320" height="240" class="center spice animated-image-three" controls>
+                <video preload="auto" width="320" height="240" class="center spice animated-image-three" controls>
                     <source src="./assets/videos/2.mp4" type="video/mp4">
                 </video>
             </div>
@@ -296,7 +316,7 @@
                     We are talking about munition with 17 Kilos of explosive materiel <br>
                     <span class="source">Daniel Hagari</span>
                 </p>
-                <video width="320" height="240" class="center-h spice object-contain">
+                <video preload="auto" width="320" height="240" class="center-h spice object-contain">
                     <source src="./assets/videos/3.mp4" type="video/mp4">
                 </video>
             </div>
@@ -319,7 +339,8 @@
                     style="background-image: url(./assets/GBU-39.png);
                         background-size: contain;
                         background-repeat: no-repeat;
-                        position: absolute;">
+                        position: absolute;
+                        background-position: center">
                 </div>
                 <!-- <img src="" alt=""> -->
                 <div class="text-graphics flexible center-bottom-bottom z-top">
@@ -342,7 +363,8 @@
                 style="background-image: url(./assets/GBU-39_destroyed.png);
                     background-size: contain;
                     background-repeat: no-repeat;
-                    position: absolute;">
+                    position: absolute;
+                    background-position: center;">
                     
                 </div>
                 <div class="text-graphics flexible center-bottom-bottom z-top">
@@ -359,9 +381,8 @@
                 style="background-image: url(./assets/bomb_exposed_name.png);
                     background-size: contain;
                     background-repeat: no-repeat;
-                    position: absolute;">
-                    <img src="./assets/rectangle.svg" alt="" class="rectangle">
-                    <img src="./assets/rectangle_arrow.svg" alt="" class="rectangle-arrow">
+                    position: absolute;
+                    background-position: center">
                 </div>
                 <div class="text-graphics flexible center-bottom z-top">
                     <p class="semi-bold font-s-18 margin-bottom-20">
@@ -391,7 +412,7 @@
                         مقابلة مع إحدى الناجيات من قصف خيام المواصي، تتحدث عن تتابع دورات النزوح والتي لم تحميهم من الموت أيضًا.
                     </p>
                 </div>
-                <video width="320" height="240" class="center spice object-contain" controls>
+                <video preload="auto" width="320" height="240" class="center spice object-contain" controls>
                     <source src="./assets/Audio/1.mp4" type="video/mp4">
                 </video>
             </div>
@@ -405,7 +426,7 @@
                         ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، كانت بعض الخيام قد انهارت وبعضها الآخر مُلئ بالثقوب إثر تطاير شظايا المقذوف.​
                     </p>
                 </div>
-                <video width="320" height="240" class="center spice width-moderate aljazera" controls>
+                <video preload="auto" width="320" height="240" class="center spice width-moderate aljazera" controls>
                     <source src="./assets/videos/4.mp4" type="video/mp4">
                 </video>
             </div>
@@ -464,7 +485,8 @@
 
     <div id="map"></div>
 
-    
+    <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
+
     <!-- GSAP Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <!-- ./GSAP Plugins -->
