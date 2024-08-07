@@ -11,6 +11,7 @@ import { evac_area_1 } from './data/evac_area_1.js';
 import { evac_area_2 } from './data/evac_area_2.js';
 import { evac_area_3_1 } from './data/evac_area_3_1.js';
 import { evac_area_3_2 } from './data/evac_area_3_2.js';
+import { evac_area_3_3 } from './data/evac_area_3_3.js';
 import { evac_area_4 } from './data/evac_area_4.js';
 import { evac_area_5 } from './data/evac_area_5.js';
 
@@ -596,7 +597,7 @@ const svgImages = [
     {id: 'arrow-3', path: 'assets/map_arrow_three.png', coordinates: [34.26836, 31.28998]},
     { id: 'rafah', path: 'assets/imagery/rafah.png', coordinates: [34.242789, 31.308767]},
     { id: 'rafah-two', path: 'assets/imagery/rafah_2.png', coordinates: [34.242789, 31.308767]},
-    { id: 'rafah-three',path:  'assets/imagery/rafah_3.png', coordinates: [34.242789, 31.308767]},
+    { id: 'rafah-three',path:  'assets/imagery/rafah_3.png', coordinates: [34.242789  + 0.003, 31.308767]},
     { id: 'south-one', path: 'assets/imagery/south_1.png', coordinates: getCoordinates('south-one')},
     { id: 'south-two', path: 'assets/imagery/south_2.png', coordinates: getCoordinates('south-one')},
     { id: 'south-three', path: 'assets/imagery/south_3.png', coordinates: getCoordinates("south-three")},
@@ -696,12 +697,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // detectBrowser();
     document.querySelectorAll("video").forEach(video => {
         video.addEventListener('error', (e) => {
-            alert("Error loading video:" + e);
+            console.log("Error loading video:" + e);
         });
         video.load();
     });
     loadHalfOne();
     showLoading();
+    const isFirefox = typeof InstallTrigger !== 'undefined';
+    if (isFirefox && isMobileScreen()) {
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            video.removeAttribute('controls');
+        });
+    }
 });
 
 async function animate(container, tl){
@@ -759,27 +767,28 @@ async function animate(container, tl){
             // Show the Arrow
             tl.add(addImageLayer("arrow", getIconSize(0.9, true)))
             // Show Evacuation Area 1
-            tl.add(addNewLayer('evac-area-one', evac_area_1, 'fill', {
-                'fill-color': '#FFDAD7e0',
-            }, 'gaza-block', {animationOpacity: 1}))
+            
             break;
         case "two-three":
             // Show Evacuation Area 2
+            
+            // // Remove Arrow 1
+            
+            // // Add Arrows for Area 2
+            
+            break;
+        case "two-four":
+            tl.add(removePreviousLayer("gaza-north", 'fill-opacity'));
+            tl.add(removePreviousLayer("arrow", "icon-opacity"))
+            tl.add(addNewLayer('evac-area-one', evac_area_1, 'fill', {
+                'fill-color': '#FFDAD7e0',
+            }, 'gaza-block', {animationOpacity: 1}))
             tl.add(addNewLayer('evac-area-two', evac_area_2, 'fill', {
                 'fill-color': '#FFDAD7e0',
                 'fill-opacity': 1,
             }, 'gaza-block'))
-            // Remove Arrow 1
-            tl.add(removePreviousLayer("arrow", "icon-opacity"))
-            // Add Arrows for Area 2
-            tl.add(addImageLayer("arrow-2", getIconSize(0.5, true)))
-
-            tl.add(addImageLayer("arrow-2-2", getIconSize(0.8, true)))
-            break;
-        case "two-four":
-            // Show Evacuation Area 3
-            tl.add(addNewLayer('evac-area-three-one', evac_area_3_1, 'fill', {
-                'fill-color': '#006579e0',
+            tl.add(addNewLayer('evac-area-three-three', evac_area_3_3, 'fill', {
+                'fill-color': '#FFDAD7e0',
                 'fill-opacity': 1,
             }, 'gaza-block'))
             tl.add(addNewLayer('evac-area-three-two', evac_area_3_2, 'fill', {
@@ -791,10 +800,12 @@ async function animate(container, tl){
                 'fill-color': '#FFDAD7e0',
                 'fill-opacity': 1,
             }, 'gaza-block'))
+            tl.add(addImageLayer("arrow-2", getIconSize(0.5, true)))
+            tl.add(addImageLayer("arrow-2-2", getIconSize(0.8, true)))
             break;
         case "two-five":
+            tl.add(removePreviousLayer("evac-area-one", 'fill-opacity'));
             tl.add(removePreviousLayer("evac-area-two", 'fill-opacity'));
-            tl.add(removePreviousLayer("gaza-north", 'fill-opacity'));
             tl.add(removePreviousLayer("evac-area-three-two", 'fill-opacity'));
             tl.add(removePreviousLayer("arrow-2", 'icon-opacity'));
             tl.add(removePreviousLayer("arrow-2-2", 'icon-opacity'));
@@ -808,6 +819,7 @@ async function animate(container, tl){
             break;
         case "three-two":
             tl.add(removePreviousLayer("evac-area-three-one", "fill-opacity"))
+            tl.add(removePreviousLayer("evac-area-three-three", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-four", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-one", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
@@ -1239,13 +1251,11 @@ async function animateBack(container, tl){
             playVideo("#twentyone");
             break;
         case "twentyone":
+            playVideo("#nineteen");
             pauseVideo("#twentyone");
             break;
         case "nineteen":
             pauseVideo("#nineteen");
-            break;
-        case "twentyone":
-            playVideo("#nineteen");
             break;
         case "fifteen" || "fourteen":
             playVideo("#thirteen")
