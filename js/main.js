@@ -14,14 +14,69 @@ import { evac_area_3_2 } from './data/evac_area_3_2.js';
 import { evac_area_4 } from './data/evac_area_4.js';
 import { evac_area_5 } from './data/evac_area_5.js';
 
-
 const elements = document.querySelectorAll("body *");
 const sections = document.querySelectorAll('.content-container');
 const totalSections = sections.length;
+const lenis = new Lenis()
 
+function raf(time) {
+  lenis.raf(time)
+  requestAnimationFrame(raf)
+}
+
+requestAnimationFrame(raf)
 let lastLoadedIndex = -1;
 
+// function detectBrowser() {
+//     const userAgent = navigator.userAgent;
+//     const isFirefox = userAgent.includes('Firefox');
 
+//     if (isFirefox) {
+//         displayWarning();
+//     }
+// }
+
+// function displayWarning() {
+//     const warningMessage = `
+//         <div class="warning-firefox">
+//             لقد اكتشفنا أنك تستخدم متصفح فايرفوكس. للحصول على تجربة أفضل، نوصي باستخدام 
+//             <strong>كروم</strong>، <strong>أوبرا</strong> أو المتصفحات الحديثة الأخرى.
+//             <br>
+//             <button class="dismiss-warning" id="dissmis" onclick="dismissWarning()">موافق</button>
+//         </div>
+//     `;
+
+//     const warningContainer = document.getElementById('unique-warning-container');
+//     warningContainer.innerHTML = warningMessage;
+// }
+
+// window.dismissWarning = function() {
+//     const warningContainer = document.getElementById('unique-warning-container');
+//     warningContainer.innerHTML = '';
+// };
+
+
+// let lastScrollTop = 0;
+// let lastScrollTime = Date.now();
+
+// function measureScrollSpeed() {
+//   const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+//   const currentTime = Date.now();
+  
+//   const scrollDistance = Math.abs(currentScrollTop - lastScrollTop);
+//   const timeElapsed = currentTime - lastScrollTime;
+  
+//   if (timeElapsed > 0) {
+//     const scrollSpeed = scrollDistance / timeElapsed * 1000; // pixels per second
+//     console.log(`Scroll speed: ${scrollSpeed.toFixed(2)} pixels/second`);
+//   }
+  
+//   lastScrollTop = currentScrollTop;
+//   lastScrollTime = currentTime;
+// }
+
+// // Attach the function to the scroll event
+// window.addEventListener('scroll', measureScrollSpeed);
 
 // Scroll to a specific section
 const scrollToSection = (index) => {
@@ -76,13 +131,33 @@ function snapScroll(cs = 0, to = null){
 
     currentSection = scrollToSection(0);
 }
-
+function cleanDetachedElements(elements) {
+    elements.forEach(element => {
+        if (!document.body.contains(element)) {
+            element = null;  // Dereference the element
+        }
+    });
+}
 function preventScroll(e) {
     e.preventDefault();
     e.stopPropagation();
     return false;
 }
+function findDetachedElements() {
+    const detachedElements = [];
 
+    function traverse(node) {
+        if (!document.body.contains(node) && node.nodeType === Node.ELEMENT_NODE) {
+            detachedElements.push(node);
+        }
+        for (let child = node.firstChild; child; child = child.nextSibling) {
+            traverse(child);
+        }
+    }
+
+    traverse(document);
+    return detachedElements;
+}
 
 function lockScroll(){
     document.body.style.overflowY = 'hidden';
@@ -90,7 +165,14 @@ function lockScroll(){
     document.addEventListener('touchmove', preventScroll, { passive: false });
 }
 
+function unlockScroll() {
+    document.body.style.overflowY = '';
+    document.removeEventListener('wheel', preventScroll);
+    document.removeEventListener('touchmove', preventScroll);
+}
+
 function showLoading(){
+    lockScroll();
     let showContent = false;
 
     // Function to update content visibility
@@ -123,26 +205,21 @@ function showLoading(){
 
     // Function to watch areAllSVGsLoaded and dispatch event when true
     function watchSVGLoading() {
-        if (areAllMainImagesLoaded()) {
+        if (areHalfOneLoaded()) {
             const event = new CustomEvent(SVG_LOADED_EVENT);
             document.dispatchEvent(event);
             hideLoadingScreen();
             // Disable Scroll until ok is clicked
-            // lockScroll();
             // Unlock page (remove warning) on button click
             document.getElementById('unlockScrollButton').addEventListener('click', function() {
-                if(!isMobileScreen()){
-                    // snapScroll();
-                }
+                unlockScroll()
                 document.removeEventListener('wheel', preventScroll);
                 document.removeEventListener('touchmove', preventScroll);
                 document.querySelector(".warning").style.opacity = 0;
-                setTimeout(() => {
-                    document.querySelector(".warning").style.display = "none";
-                }, 1000)
-                // document.getElementById("scrollDown").addEventListener("click", () => {
-                //     scrollToSection(1);
-                // })
+                document.querySelector(".warning").style.display = "none";
+                document.getElementById("scrollDown").addEventListener("click", () => {
+                    scrollToSection(1);
+                })
                 this.disabled = true;
             });
         } else {
@@ -150,7 +227,6 @@ function showLoading(){
         }
     }
 
-    // lockScroll();
     // Hide content on document load
     updateContentVisibility();
 
@@ -207,7 +283,7 @@ const init = () => {
 
 const playVideo = (container) => {
     const video = document.querySelector(`${container} video`);
-    video.volume = 0.1;
+    video.volume = 0.05;
     video.play();
 }  
 
@@ -334,6 +410,14 @@ function areAllMainImagesLoaded(){
     return svgImages.every(img => loadedImages[img.id] === true);
 }
 
+function areHalfOneLoaded(){
+    let sImages = [];
+    for(let i = 0; i < svgImages.length / 2; i++){
+        sImages.push(svgImages[i]);
+    }
+    return sImages.every(img => loadedImages[img.id] === true);
+}
+
 // function areAllSVGsLoaded() {
 //     return svgImages.every(img => loadedImages[img.id] === true);
 // }
@@ -363,8 +447,25 @@ async function loadLocalImage(name, path, coordinates){
     }
 }
 
+function unloadLocalImage(name){
+    if(map.hasImage(name)){
+        map.removeImage(name);
+        if(map.getSource(name)){
+            map.removeSource(name);
+        }
+    }
+}
+
 
 function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
+    // if(!loadedImages[name]){
+    //     for(const image of svgImages){
+    //         if(image.id === name){
+    //             await loadLocalImage(name, image.path, image.coordinates)
+    //         }
+    //     }
+    // }
+
     if(!map.getLayer(name) && map.getSource(name)){
         if(before){
             map.addLayer({
@@ -381,7 +482,7 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                     ],
                     'icon-allow-overlap': true,
                     'icon-anchor': 'center',
-                    'icon-rotate': rotation
+                    'icon-rotate': rotation,
                 }
             }, before);
         }else{
@@ -399,18 +500,20 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                     ],
                     'icon-allow-overlap': true,
                     'icon-anchor': 'center',
-                    'icon-rotate': rotation
+                    'icon-rotate': rotation,
                 }
             });
         }
     }
     if(map.getLayer(name)){
-        return gsap.to({ opacity: 0 }, {
+        let miniTimeline = gsap.timeline();
+        return miniTimeline.to({ opacity: 0 }, {
             opacity: 1,
             duration: duration,
+            ease: "power2.out",
             onUpdate: function () {
                 map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
-            },
+            }
         });
     }
 }
@@ -487,6 +590,10 @@ function getCoordinates(id){
 }
 
 const svgImages = [
+    {id: 'arrow', path: 'assets/map_arrow_one.png', coordinates: [34.40864, 31.45657]},
+    {id: 'arrow-2', path: 'assets/map_arrow_two.png', coordinates: [34.41148, 31.45489]},
+    {id: 'arrow-2-2', path: 'assets/map_arrow_two_two.png', coordinates: [34.30872, 31.32629]},
+    {id: 'arrow-3', path: 'assets/map_arrow_three.png', coordinates: [34.26836, 31.28998]},
     { id: 'rafah', path: 'assets/imagery/rafah.png', coordinates: [34.242789, 31.308767]},
     { id: 'rafah-two', path: 'assets/imagery/rafah_2.png', coordinates: [34.242789, 31.308767]},
     { id: 'rafah-three',path:  'assets/imagery/rafah_3.png', coordinates: [34.242789, 31.308767]},
@@ -496,14 +603,12 @@ const svgImages = [
     { id: 'mawasi', path: 'assets/imagery/mawasi.png', coordinates: [34.265655, 31.349355]},
     { id: 'mawasi-two', path: 'assets/imagery/mawasi_2.png', coordinates: [34.300712, 31.377954]},
     { id: 'mawasi-two-two', path: 'assets/imagery/mawasi_2_2.png', coordinates: [34.300712, 31.377954]},
-    // ,
     { id: 'mawasi-three', path: 'assets/imagery/mawasi_3.png', coordinates: [34.284616, 31.368566]},
     { id: 'mawasi-four', path: 'assets/imagery/mawasi_4.png', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-five', path: 'assets/imagery/mawasi_5.png', coordinates: [34.296442, 31.375787]},
-    // ,
-    { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.230671, 31.330667]},
+    { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.238994, 31.332507]},
     { id: 'mawasi-seven', path: 'assets/imagery/mawasi_7.png', coordinates: [34.230671, 31.330667]},
-    { id: 'mawasi-eight', path: 'assets/imagery/mawasi_8.png', coordinates: [34.230671, 31.330667]},
+    { id: 'mawasi-eight', path: 'assets/imagery/mawasi_8.png', coordinates: [34.238994, 31.332507]},
 ];
 
 const gazaCoordinates = [34.46991,31.39533];
@@ -531,9 +636,9 @@ function getGazaBounds() {
 
 function getIconSize(size, accurate = false){
     if(accurate){
-        return isMobileScreen() ? size - 0.2 : size;
+        return isMobileScreen() ? size - 0.1 : size;
     }
-    return isMobileScreen() ? size  - 0.15 : size;
+    return isMobileScreen() ? size  - 0.10 : size;
 }
 
 // Add Support for RTL Languages 
@@ -550,21 +655,710 @@ const map = new maplibregl.Map({
     interactive: false
 });
 
-function removeHalf(){
+function removeHalfOne(){
     for(let i = 0; i < (svgImages.length / 2); i++){
         removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
     }
 }
+
+async function loadHalfOne(){
+    for(let i = 0; i < (svgImages.length / 2); i++){
+        await loadLocalImage(svgImages[i].id, svgImages[i].path, svgImages[i].coordinates);
+        loadedImages[svgImages[i].id] = true;
+    }
+    return true;
+}
+
+
+function removeHalfTwo(){
+    for(let i = svgImages.length - 1; i > (svgImages.length / 2); i--){
+        removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
+    }
+}
+
+async function loadHalfTwo(){
+    for(let i = svgImages.length - 1; i > (svgImages.length / 2); i--){
+        await loadLocalImage(svgImages[i].id, svgImages[i].path, svgImages[i].coordinates);
+        loadedImages[svgImages[i].id] = true;
+    }
+    return true;
+}
+
 
 function removeAll(){
     for(let i = 0; i < svgImages.length; i++){
         removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
-    preloadMainImages();
+    scrollToSection(0);
+    // detectBrowser();
+    document.querySelectorAll("video").forEach(video => {
+        video.addEventListener('error', (e) => {
+            alert("Error loading video:" + e);
+        });
+        video.load();
+    });
+    loadHalfOne();
     showLoading();
 });
+
+async function animate(container, tl){
+    tl = gsap.timeline({
+        defaults: {ease: "power2.in"},
+        scrollTrigger: {
+            trigger: container,
+            start: "top 50%",
+            end: "bottom bottom",
+            toggleActions: "play none none reverse",
+            preventOverlaps: true,
+            fastScrollEnd: true,
+            scrub: 0.1,
+        }
+    })
+    const currentId = container.id;
+    switch (currentId) {
+        case "one":
+            // Remove labels
+            tl.add(switchLabelsVisibility("none", ['label_country', 'label_place_city', 'label_place_other', 'label_road']));
+
+            // Remove layers
+            tl.add(removePreviousLayer('main-streets', 'line-opacity'));
+
+            // Add destruction
+            tl.add(addNewLayer('main-destruction', mainDestruction, 'circle', {
+                'circle-color': 'red',
+                'circle-radius': 0.8
+            }, false));
+            break;
+        case "two":
+            // Hide Destruction
+            tl.add(removePreviousLayer("main-destruction", "circle-opacity"));
+            // Hide Gaza-gray
+            tl.add(removePreviousLayer("gaza-gray", "fill-opacity"));
+
+            // Show Blocks
+            tl.add(addNewLayer('gaza-block', blocks, 'line', {
+                'line-color': 'black',
+                'line-opacity': 1
+            }, false, {animationOpacity: 1}))
+            // Show Three Lines
+            tl.add(addNewLayer('gaza-block-lines', blocks_lines, 'line', {
+                'line-color': 'black',
+                'line-opacity': 1,
+                'line-width': 2
+            }, false, {animationOpacity: 1}))
+            break;
+        case "two-two":
+            // Show the North
+            tl.add(addNewLayer('gaza-north', gaza_north, 'fill', {
+                'fill-color': '#f07f79',
+                'fill-opacity': 1,
+            }, false))
+            // Show the Arrow
+            tl.add(addImageLayer("arrow", getIconSize(0.9, true)))
+            // Show Evacuation Area 1
+            tl.add(addNewLayer('evac-area-one', evac_area_1, 'fill', {
+                'fill-color': '#FFDAD7e0',
+            }, 'gaza-block', {animationOpacity: 1}))
+            break;
+        case "two-three":
+            // Show Evacuation Area 2
+            tl.add(addNewLayer('evac-area-two', evac_area_2, 'fill', {
+                'fill-color': '#FFDAD7e0',
+                'fill-opacity': 1,
+            }, 'gaza-block'))
+            // Remove Arrow 1
+            tl.add(removePreviousLayer("arrow", "icon-opacity"))
+            // Add Arrows for Area 2
+            tl.add(addImageLayer("arrow-2", getIconSize(0.5, true)))
+
+            tl.add(addImageLayer("arrow-2-2", getIconSize(0.8, true)))
+            break;
+        case "two-four":
+            // Show Evacuation Area 3
+            tl.add(addNewLayer('evac-area-three-one', evac_area_3_1, 'fill', {
+                'fill-color': '#006579e0',
+                'fill-opacity': 1,
+            }, 'gaza-block'))
+            tl.add(addNewLayer('evac-area-three-two', evac_area_3_2, 'fill', {
+                'fill-color': '#006579e0',
+                'fill-opacity': 1,
+            }, 'gaza-block'))
+            // Show Evacuation Area 4
+            tl.add(addNewLayer('evac-area-four', evac_area_4, 'fill', {
+                'fill-color': '#FFDAD7e0',
+                'fill-opacity': 1,
+            }, 'gaza-block'))
+            break;
+        case "two-five":
+            tl.add(removePreviousLayer("evac-area-two", 'fill-opacity'));
+            tl.add(removePreviousLayer("gaza-north", 'fill-opacity'));
+            tl.add(removePreviousLayer("evac-area-three-two", 'fill-opacity'));
+            tl.add(removePreviousLayer("arrow-2", 'icon-opacity'));
+            tl.add(removePreviousLayer("arrow-2-2", 'icon-opacity'));
+            // Show Evacuation Area 5
+            tl.add(addNewLayer('evac-area-five', evac_area_5, 'fill', {
+                'fill-color': '#006579e0',
+                'fill-opacity': 1,
+            }, false))
+            // Show arrows 3
+            tl.add(addImageLayer("arrow-3", getIconSize(0.9, true)))
+            break;
+        case "three-two":
+            tl.add(removePreviousLayer("evac-area-three-one", "fill-opacity"))
+            tl.add(removePreviousLayer("evac-area-four", "fill-opacity"))
+            tl.add(removePreviousLayer("evac-area-one", "fill-opacity"))
+            tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
+            tl.add(removePreviousLayer("arrow-3", 'icon-opacity'));
+
+            tl.to("#three-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#three-two .content-child", {y: 100, duration: 0.5})
+            
+
+            // const textSource = {
+            //     type: 'geojson',
+            //     data: {
+            //         type: 'FeatureCollection',
+            //         features: [
+            //             {
+            //                 type: 'Feature',
+            //                 geometry: {
+            //                     type: 'Point',
+            //                     coordinates: [34.242789, 31.308767], // Example coordinates [longitude, latitude]
+            //                 },
+            //                 properties: {
+            //                     title: 'Your Text Here'
+            //                 }
+            //             }
+            //         ]
+            //     }
+            // };
+
+            // map.addSource('textSource', textSource);
+            // map.addLayer({
+            //     id: 'textLayer',
+            //     type: 'symbol',
+            //     source: 'textSource',
+            //     layout: {
+            //         'text-field': ['get', 'title'],
+            //         'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+            //         'text-size': 20,
+            //         'text-offset': [0, 0.6],
+            //         'text-anchor': 'top'
+            //     },
+            //     paint: {
+            //         'text-color': '#000000'
+            //     }
+            // });
+
+            // add the image
+            tl.add(addImageLayer("rafah", getIconSize(0.3)))
+
+            map.flyTo({
+                center: [34.242789, 31.308767],
+                essential: true,
+                zoom: 14
+            });
+            break;
+        case "three-three":
+            // Remove Second Image
+            tl.add(removePreviousLayer('rafah', 'icon-opacity'));
+            
+            tl.add(addImageLayer("rafah-two", getIconSize(0.28)))
+            // add the third image
+            
+            break;
+        case "three-four":
+            // Remove second image
+            tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
+            // add the third image
+            tl.add(addImageLayer("rafah-three", getIconSize(0.23)))
+            break;
+        case "four":
+            tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#three-two .content-child", {position: 'unset !important', duration: 0.1})
+            tl.add(removePreviousLayer("rafah-three", 'icon-opacity'))
+            // Hide The Map
+            tl.add(hideMap());
+            break;
+        case "five":
+            tl.to("#five .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#five .content-child", {y: 100, duration: 0.5})
+            // Show The Map
+            tl.add(showMap());
+            map.flyTo({
+                center: [34.27204, 31.23714],
+                essential: true,
+                zoom: 13.5
+            })
+            tl.add(addImageLayer("south-one", getIconSize(0.3)))
+            break;
+        case "five-two":
+            tl.add(addImageLayer("south-two", getIconSize(0.3)))
+            tl.add(removePreviousLayer("south-one", "icon-opacity"))
+            break;
+        case "five-three":
+            tl.add(addImageLayer("south-three", getIconSize(0.3)))
+            break;
+        case "six":
+            loadHalfTwo();
+            tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#five .content-child", {position: 'unset !important', duration: 0.1})
+            // Hide The Map
+            tl.add(hideMap());
+            tl.add(removePreviousLayer("south-two", "icon-opacity"))
+            tl.add(removePreviousLayer("south-three", "icon-opacity"))
+            break;
+        case "seven":
+            tl.to("#seven .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#seven .content-child", {y: 100, duration: 0.5})
+            // Show The Map
+            tl.add(showMap());
+
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            
+            tl.add(removePreviousLayer("gaza-block", "line-opacity"));
+            tl.add(removePreviousLayer("gaza-block-lines", "line-opacity"))
+            tl.add(removePreviousLayer("gaza", "fill-opacity"))
+            
+            map.setPaintProperty("road_path", "line-color", "black")
+            map.setPaintProperty("road_major", "line-color", "black")
+            map.setPaintProperty("road_minor", "line-color", "black")
+            // tl.add(addNewLayer("gaza-streets", mainStreets, "line", {
+            //     'line-color': 'black'
+            // }))
+            if(isMobileScreen()){
+                map.flyTo({
+                    zoom: 11,
+                    center: [34.267808, 31.350360]
+                })
+                tl.add(addImageLayer("mawasi", 0.37))
+            }else{
+                map.flyTo({
+                    zoom: 12,
+                    center: [34.267808, 31.350360]
+                })
+                tl.add(addImageLayer("mawasi", 0.62))
+            }
+            
+            break;
+        case "eight":
+            tl.to("#seven .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#seven .content-child", {position: 'unset !important', duration: 0.1})
+            tl.add(removePreviousLayer("mawasi", "icon-opacity"))
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            break;
+        case "nine":
+            tl.add(hideMap());
+            break;
+        case "ten": // Refugee Graphics
+            // Hide The Map
+            const images = document.querySelectorAll(".animated-image");
+            images.forEach(image => {
+                tl.to(image, {visibility: 'visible', opacity: 1, duration: 0.1})
+                tl.from(image, {y: 100, duration: 0.5, clearProps: "transform"})
+            })
+            break;
+        case "ten-two":
+            tl.to("#ten-two .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.5})
+            break;
+        case "ten-three":
+            tl.to("#ten-three .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.5})
+            break;
+        case "ten-four":
+            tl.to("#ten-four .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.5})
+            break;
+        case "eleven":
+            // Show The Map
+            tl.add(showMap());
+
+            const imagess = document.querySelectorAll(".animated-image");
+            imagess.forEach(image => {
+                tl.to(image, {visibility: 'hidden', opacity: 1, y: 0, duration: 0.1})
+                tl.to(image, {position: 'unset !important', duration: 0.1})
+            })
+            tl.to("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+            map.flyTo({
+                zoom: 13,
+                essential: true,
+                center: [34.300712, 31.377954]
+            })
+            tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
+            break;
+        case "eleven-two":
+            tl.add(removePreviousLayer("mawasi-two", "icon-opacity"))
+            tl.add(addImageLayer("mawasi-two-two", getIconSize(0.5)))
+            break;
+        case "twelve":
+            // Hide The Map
+            tl.add(hideMap());
+
+            tl.add(removePreviousLayer("mawasi-two-two", "icon-opacity"))
+            tl.to("#twelve .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#twelve .fixed", {y: 100, duration: 0.5, clearProps: "transform"})
+            break;
+        case "thirteen":
+            tl.to(".animated-video", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from(".animated-video", {y: 100, duration: 0.5, clearProps: "transform"})
+            playVideo("#thirteen")                            
+            break;
+        case "fourteen":
+            tl.to("#fourteen .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#fourteen .text-graphics", {y: 100, duration: 0.5})
+
+            tl.to("#fourteen-2 .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#fourteen-2 .text-graphics", {y: 100, duration: 0.5})
+            break;
+        case "fifteen":
+            tl.to(".animated-video", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to(".animated-video", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#fourteen .fixed img", {visibility: "hidden", opacity: 0, y: 0, duration: 0.1})
+
+            tl.to("#fourteen .fixed", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#fourteen .fixed", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#thirteen .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#thirteen .text-graphics", {position: 'unset !important', duration: 0.1})
+
+            
+
+            tl.to("#fifteen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#fifteen .content-child", {y: 100, duration: 0.5})
+
+
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            
+            tl.add(showMap());
+            if(isMobileScreen()){
+                tl.add(addImageLayer("mawasi-three", 0.36, -42))
+                map.flyTo({
+                    zoom: 13,
+                    bearing: 42,
+                    essential: true,
+                    center: [34.285983, 31.372169]
+                })
+            }else{
+                tl.add(addImageLayer("mawasi-three", 0.36))
+                map.flyTo({
+                    zoom: 13,
+                    essential: true,
+                    center: [34.285983, 31.372169]
+                })
+            }
+            
+            break;
+        case "seventeen":
+            tl.add(addImageLayer("mawasi-four", getIconSize(0.4))) 
+            // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
+            map.flyTo({
+                zoom: 13.2,
+                essential: true,
+                center: [34.296442, 31.375787]
+            })
+            break;
+        case "eighteen":
+            tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
+            tl.add(addImageLayer("mawasi-five", getIconSize(0.4))) 
+            break;
+        case "eighteen-two":
+            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
+            tl.add(hideMap());
+            break;
+        case "sixteen":
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            break;
+        case "nineteen":
+            playVideo("#nineteen");
+            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#map", {
+                opacity: 0,
+                visibility: 'none',
+                duration: 1
+            });
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            tl.add(removePreviousLayer("mawasi-five", "icon-opacity"))
+            tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
+
+            tl.to(".animated-image-three", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from(".animated-image-three", {y: 100, duration: 0.5})
+            break;
+        case "twentyone":
+            pauseVideo("#nineteen")
+            playVideo("#twentyone")
+            tl.to(".animated-image-three", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to(".animated-image-three", {position: 'unset !important', duration: 0.1})
+            break;
+        case "twentytwo":
+            pauseVideo("#twentyone")
+            break;
+        case "twentysix":
+            playVideo("#twentysix");
+            break;
+        case "twentyseven":
+            playVideo("#twentyseven");
+            pauseVideo("#twentysix");
+            break;
+        case "twentyeight":
+            // Show The Map
+            tl.add(showMap());
+
+            // ,
+            if(isMobileScreen()){
+                tl.add(addImageLayer("mawasi-six", getIconSize(0.59))) 
+                map.flyTo({
+                    zoom: 13,
+                    essential: true,
+                    center: [34.244100, 31.334291]
+                })
+            }else{
+                tl.add(addImageLayer("mawasi-six", getIconSize(0.28))) 
+                map.flyTo({
+                    zoom: 14,
+                    essential: true,
+                    center: [34.244100, 31.334291]
+                })
+            }
+
+            break;
+        case "twentynine":
+            tl.add(removePreviousLayer("mawasi-six", 'icon-opacity'))
+            if(isMobileScreen()){
+                tl.add(addImageLayer("mawasi-seven", getIconSize(0.59))) 
+            }else{
+                tl.add(addImageLayer("mawasi-seven", getIconSize(0.28)))  
+            }
+            
+            break;
+        case "thirty":
+            tl.add(removePreviousLayer("mawasi-seven", 'icon-opacity'))
+            if(isMobileScreen()){
+                tl.add(addImageLayer("mawasi-eight", getIconSize(0.59))) 
+                map.flyTo({
+                    zoom: 13,
+                    essential: true,
+                    center: [34.238093, 31.333118]
+                })
+            }else{
+                tl.add(addImageLayer("mawasi-eight", getIconSize(0.28)))  
+                map.flyTo({
+                    zoom: 15,
+                    essential: true,
+                    center: [34.238093, 31.333118]
+                })
+            }
+            tl.add(addImageLayer("mawasi-eight", getIconSize(0.28))) 
+            
+            break;
+        case "thirtyone":
+            // Hide The Map
+            tl.add(hideMap());
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            tl.add(removePreviousLayer("mawasi-eight", 'icon-opacity'))
+            const detachedElements = findDetachedElements();
+            cleanDetachedElements(detachedElements);
+            break;
+    }
+    return tl;
+}
+
+async function animateBack(container, tl){
+    if(tl){
+        tl.reverse();
+        tl.progress(0);
+    }
+    const currentId = container.id;
+    switch (currentId) {
+        case "thirty":
+            if(isMobileScreen()){
+                map.flyTo({
+                    zoom: 13,
+                    essential: true,
+                    center: [34.244100, 31.334291]
+                })
+            }else{
+                map.flyTo({
+                    zoom: 14,
+                    essential: true,
+                    center: [34.244100, 31.334291]
+                })
+            }
+            break;
+        case "twentyseven":
+            playVideo("#twentysix");
+            break;
+        case "twentyeight":
+            playVideo("#twentyseven");
+            break;
+        case "twentyseven":
+            pauseVideo("#twentysix");
+            break;
+        case "twentysix":
+            pauseVideo("#twentysix");
+            break;
+        case "twentytwo":
+            playVideo("#twentyone");
+            break;
+        case "twentyone":
+            pauseVideo("#twentyone");
+            break;
+        case "nineteen":
+            pauseVideo("#nineteen");
+            break;
+        case "twentyone":
+            playVideo("#nineteen");
+            break;
+        case "fifteen" || "fourteen":
+            playVideo("#thirteen")
+            break;
+        case "twelve":
+            map.flyTo({
+                zoom: 13,
+                essential: true,
+                bearing: 0,
+                center: [34.300712, 31.377954]
+            })
+            break;
+        case "thirtyone":
+            if(isMobileScreen()){
+                map.flyTo({
+                    zoom: 13,
+                    essential: true,
+                    center: [34.238093, 31.333118]
+                })
+            }else{
+                map.flyTo({
+                    zoom: 15,
+                    essential: true,
+                    center: [34.238093, 31.333118]
+                })
+            }
+            break;
+        case "nineteen":
+            map.flyTo({
+                zoom: 15,
+                essential: true,
+                center: [34.296442, 31.375787]
+            })
+            break;
+        case "eighteen":
+            
+            break;
+            case "eighteen-two":
+            if(isMobileScreen()){
+                map.flyTo({
+                    zoom: 13.2,
+                    bearing: 42,
+                    essential: true,
+                    center: [34.296442, 31.375787]
+                })
+            }else{
+                map.flyTo({
+                    zoom: 13.2,
+                    essential: true,
+                    center: [34.296442, 31.375787]
+                })
+            }
+            
+            break;
+        case "seventeen":
+            map.flyTo({
+                zoom: 13,
+                essential: true,
+                center: [34.285983, 31.375169]
+            })
+            break;
+        case "sixteen":
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            break;
+        case "eight":
+            if(isMobileScreen()){
+                map.flyTo({
+                    zoom: 11,
+                    center: [34.267808, 31.350360]
+                })
+            }else{
+                map.flyTo({
+                    zoom: 12,
+                    center: [34.267808, 31.350360]
+                })
+            }
+
+            break;
+        case "seven-two":
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            break;
+        case "six":
+            removeHalfTwo();
+            map.flyTo({
+                center: [34.27204, 31.23714],
+                essential: true,
+                zoom: 13.5
+            })
+            break;
+        case "four":
+            map.flyTo({
+                center: [34.242789, 31.308767],
+                essential: true,
+                zoom: 14
+            });
+            break;
+        case "three-two":
+            map.fitBounds(getGazaBounds(), {
+                padding: { top: 20, bottom: 20, left: 20, right: 20 },
+                maxZoom: 15, 
+                duration: 1000
+            });
+            break;
+    }
+}
 map.on('load', async () => {
     map.fitBounds(getGazaBounds(), {
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
@@ -671,689 +1465,25 @@ map.on('load', async () => {
 
     /*** Start Scrolls ***/
     // preloadSVGImages();
-    const containers = document.querySelectorAll(".content-container");
-    
-    containers.forEach((container, index) => {
-        const childElements = Array.from(container.querySelectorAll('.content-child'));
-    
-        gsap.set(childElements, {});    
-        let tl;
-        if(areAllMainImagesLoaded){
-            ScrollTrigger.create({
+    const containers = gsap.utils.toArray(".content-container");
+
+    gsap.registerPlugin(ScrollTrigger);
+    containers.forEach(container => {
+        let tl = gsap.timeline({
+            defaults: {ease: "power2.in"},
+            scrollTrigger: {
                 trigger: container,
                 start: "top 50%",
-                end: "bottom 20%",
-                scrub: true,
-                fastScrollEnd: true,
+                end: "bottom bottom",
                 preventOverlaps: true,
-                onEnter: async () => {
-                    // if(container.querySelector(".content-child")){
-                    //     if (container.id !== "two-three" && container.id !== "three-two" && container.id !== 'five' && container.id !== "nineteen" && container.id !== "fifteen" && container.id !== "twelve" && container.id !== "thirteen" && container.id !== "fourteen" && container.id !== "ten" && container.id !== "ten-two" && container.id !== "ten-three" && container.id !== "ten-four" && container.id !== "seven") {
-                    //         gsap.fromTo(childElements,
-                    //             { opacity: 0, y: 200 },
-                    //             { opacity: 1, y: 0, duration: 2, ease: 'power1.inOut', clearProps: "all" }
-                    //         );
-                    //     }
-                    // }
-                    
-                    const currentId = container.id;
-                    tl = gsap.timeline();
-                    switch (currentId) {
-                        case "one":
-                            // Remove labels
-                            tl.add(switchLabelsVisibility("none", ['label_country', 'label_place_city', 'label_place_other', 'label_road']));
-        
-                            // Remove layers
-                            // tl.add(removePreviousLayer('gaza', 'fill-opacity'));
-                            tl.add(removePreviousLayer('main-streets', 'line-opacity'));
-        
-                            // Add gaza gray
-                            // tl.add(addNewLayer('gaza-gray', gaza, 'fill', {
-                            //     'fill-color': '#cdcdcd'
-                            // }, false));
-        
-                            // Add destruction
-                            tl.add(addNewLayer('main-destruction', mainDestruction, 'circle', {
-                                'circle-color': 'red',
-                                'circle-radius': 0.8
-                            }, false));
-                            break;
-                        case "two":
-                            // Hide Destruction
-                            tl.add(removePreviousLayer("main-destruction", "circle-opacity"));
-                            // Hide Gaza-gray
-                            tl.add(removePreviousLayer("gaza-gray", "fill-opacity"));
-    
-                            // Show Gaza-White
-                            // tl.add(addNewLayer('gaza-white', gaza, 'fill', {
-                            //     'fill-color': 'white',
-                            // }, false, {animationOpacity: 1}))
-                            // Show Blocks
-                            tl.add(addNewLayer('gaza-block', blocks, 'line', {
-                                'line-color': 'black',
-                                'line-opacity': 1
-                            }, false, {animationOpacity: 1}))
-                            // Show Three Lines
-                            tl.add(addNewLayer('gaza-block-lines', blocks_lines, 'line', {
-                                'line-color': 'black',
-                                'line-opacity': 1,
-                                'line-width': 2
-                            }, false, {animationOpacity: 1}))
-                            // Show the North
-                            tl.add(addNewLayer('gaza-north', gaza_north, 'fill', {
-                                'fill-color': '#f07f79',
-                                'fill-opacity': 1,
-                            }, false))
-                            // Show the Arrow
-                            tl.add(await loadLocalImage('arrow', 'assets/map_arrow_one.png', [34.40864, 31.45657]));
-                            tl.add(addImageLayer("arrow", getIconSize(0.9, true)))
-                            break;
-                        case "two-two":
-                            // Show Evacuation Area 1
-                            tl.add(addNewLayer('evac-area-one', evac_area_1, 'fill', {
-                                'fill-color': '#FFDAD7e0',
-                                'fill-opacity': 1,
-                            }, 'gaza-block', {animationOpacity: 1}))
-                            break;
-                        case "two-three":
-                            tl.to("#two-three .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#two-three .content-child", {y: 100, duration: 0.5})
-                            // Show Evacuation Area 2
-                            tl.add(addNewLayer('evac-area-two', evac_area_2, 'fill', {
-                                'fill-color': '#FFDAD7e0',
-                                'fill-opacity': 1,
-                            }, 'gaza-block'))
-                            // Remove Arrow 1
-                            tl.add(removePreviousLayer("arrow", "icon-opacity"))
-                            // Add Arrows for Area 2
-                            tl.add(await loadLocalImage('arrow-2', 'assets/map_arrow_two.png', [34.41148, 31.45489]));
-                            tl.add(addImageLayer("arrow-2", getIconSize(0.5, true)))
-    
-                            tl.add(await loadLocalImage('arrow-2-2', 'assets/map_arrow_two_two.png', [34.30872, 31.32629]));
-                            tl.add(addImageLayer("arrow-2-2", getIconSize(0.8, true)))
-                            break;
-                        case "two-four":
-                            // Show Evacuation Area 3
-                            tl.add(addNewLayer('evac-area-three-one', evac_area_3_1, 'fill', {
-                                'fill-color': '#006579e0',
-                                'fill-opacity': 1,
-                            }, 'gaza-block'))
-                            tl.add(addNewLayer('evac-area-three-two', evac_area_3_2, 'fill', {
-                                'fill-color': '#006579e0',
-                                'fill-opacity': 1,
-                            }, 'gaza-block'))
-                            // Show Evacuation Area 4
-                            tl.add(addNewLayer('evac-area-four', evac_area_4, 'fill', {
-                                'fill-color': '#FFDAD7e0',
-                                'fill-opacity': 1,
-                            }, 'gaza-block'))
-                            break;
-                        case "two-five":
-                            tl.to("#two-three .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#two-three .content-child", {position: 'unset !important', duration: 0.1})
-                            tl.add(removePreviousLayer("evac-area-two", 'fill-opacity'));
-                            tl.add(removePreviousLayer("gaza-north", 'fill-opacity'));
-                            tl.add(removePreviousLayer("evac-area-three-two", 'fill-opacity'));
-                            tl.add(removePreviousLayer("arrow-2", 'icon-opacity'));
-                            tl.add(removePreviousLayer("arrow-2-2", 'icon-opacity'));
-                            // Show Evacuation Area 5
-                            tl.add(addNewLayer('evac-area-five', evac_area_5, 'fill', {
-                                'fill-color': '#006579e0',
-                                'fill-opacity': 1,
-                            }, false))
-                            // Show arrows 3
-                            tl.add(await loadLocalImage('arrow-3', 'assets/map_arrow_three.png', [34.26836, 31.28998]));
-                            tl.add(addImageLayer("arrow-3", getIconSize(0.9, true)))
-                            break;
-                        case "three-two":
-                            tl.add(removePreviousLayer("evac-area-three-one", "fill-opacity"))
-                            tl.add(removePreviousLayer("evac-area-four", "fill-opacity"))
-                            tl.add(removePreviousLayer("evac-area-one", "fill-opacity"))
-                            tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
-                            tl.add(removePreviousLayer("arrow-3", 'icon-opacity'));
-
-                            tl.to("#three-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#three-two .content-child", {y: 100, duration: 0.5})
-                            
-                            
-
-                            
-
-                            // const textSource = {
-                            //     type: 'geojson',
-                            //     data: {
-                            //         type: 'FeatureCollection',
-                            //         features: [
-                            //             {
-                            //                 type: 'Feature',
-                            //                 geometry: {
-                            //                     type: 'Point',
-                            //                     coordinates: [34.242789, 31.308767], // Example coordinates [longitude, latitude]
-                            //                 },
-                            //                 properties: {
-                            //                     title: 'Your Text Here'
-                            //                 }
-                            //             }
-                            //         ]
-                            //     }
-                            // };
-
-                            // map.addSource('textSource', textSource);
-                            // map.addLayer({
-                            //     id: 'textLayer',
-                            //     type: 'symbol',
-                            //     source: 'textSource',
-                            //     layout: {
-                            //         'text-field': ['get', 'title'],
-                            //         'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-                            //         'text-size': 20,
-                            //         'text-offset': [0, 0.6],
-                            //         'text-anchor': 'top'
-                            //     },
-                            //     paint: {
-                            //         'text-color': '#000000'
-                            //     }
-                            // });
-
-                            // add the image
-                            tl.add(addImageLayer("rafah", getIconSize(0.3)))
-                            map.flyTo({
-                                center: [34.242789, 31.308767],
-                                essential: true,
-                                zoom: 14
-                            });
-                            break;
-                        case "three-three":
-                            // Remove Second Image
-                            tl.add(removePreviousLayer('rafah', 'icon-opacity'));
-                            
-                            tl.add(addImageLayer("rafah-two", getIconSize(0.28)))
-                            // add the third image
-                           
-                            break;
-                        case "three-four":
-                            // Remove second image
-                            tl.add(removePreviousLayer("rafah-two", 'icon-opacity'))
-                            // add the third image
-                            tl.add(addImageLayer("rafah-three", getIconSize(0.23)))
-                            break;
-                        case "four":
-                            tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#three-two .content-child", {position: 'unset !important', duration: 0.1})
-                            tl.add(removePreviousLayer("rafah-three", 'icon-opacity'))
-                            // Hide The Map
-                            tl.add(hideMap());
-                            break;
-                        case "five":
-                            tl.to("#five .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#five .content-child", {y: 100, duration: 0.5})
-                            // Show The Map
-                            tl.add(showMap());
-                            map.flyTo({
-                                center: [34.27204, 31.23714],
-                                essential: true,
-                                zoom: 13.5
-                            })
-                            tl.add(addImageLayer("south-one", getIconSize(0.3)))
-                            break;
-                        case "five-two":
-                            tl.add(addImageLayer("south-two", getIconSize(0.3)))
-                            tl.add(removePreviousLayer("south-one", "icon-opacity"));
-                            break;
-                        case "five-three":
-                            tl.add(addImageLayer("south-three", getIconSize(0.3)))
-                            break;
-                        case "six":
-                            tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#five .content-child", {position: 'unset !important', duration: 0.1})
-                            // Hide The Map
-                            tl.add(hideMap());
-
-                            tl.add(removePreviousLayer("south-two", "icon-opacity"))
-                            tl.add(removePreviousLayer("south-three", "icon-opacity"))
-                            break;
-                        case "seven":
-                            tl.to("#seven .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#seven .content-child", {y: 100, duration: 0.5})
-                            // Show The Map
-                            tl.add(showMap());
-
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            
-                            tl.add(removePreviousLayer("gaza-block", "line-opacity"));
-                            tl.add(removePreviousLayer("gaza-block-lines", "line-opacity"))
-                            tl.add(removePreviousLayer("gaza", "fill-opacity"))
-                            
-                            map.setPaintProperty("road_path", "line-color", "black")
-                            map.setPaintProperty("road_major", "line-color", "black")
-                            map.setPaintProperty("road_minor", "line-color", "black")
-                            // tl.add(addNewLayer("gaza-streets", mainStreets, "line", {
-                            //     'line-color': 'black'
-                            // }))
-                            if(isMobileScreen()){
-                                map.flyTo({
-                                    zoom: 11,
-                                    center: [34.267808, 31.350360]
-                                })
-                                tl.add(addImageLayer("mawasi", 0.37))
-                            }else{
-                                map.flyTo({
-                                    zoom: 12,
-                                    center: [34.267808, 31.350360]
-                                })
-                                tl.add(addImageLayer("mawasi", 0.62))
-                            }
-                            
-                            break;
-                        case "eight":
-                            tl.to("#seven .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#seven .content-child", {position: 'unset !important', duration: 0.1})
-                            tl.add(removePreviousLayer("mawasi", "icon-opacity"))
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            break;
-                        case "nine":
-                            tl.add(hideMap());
-                            break;
-                        case "ten": // Refugee Graphics
-                            // Hide The Map
-                            const images = document.querySelectorAll(".animated-image");
-                            images.forEach(image => {
-                                tl.to(image, {visibility: 'visible', opacity: 1, duration: 0.1})
-                                tl.from(image, {y: 100, duration: 0.5, clearProps: "transform"})
-                            })
-                            break;
-                        case "ten-two":
-                            tl.to("#ten-two .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.5})
-                            break;
-                        case "ten-three":
-                            tl.to("#ten-three .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.5})
-                            break;
-                        case "ten-four":
-                            tl.to("#ten-four .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.5})
-                            break;
-                        case "eleven":
-                            // Show The Map
-                            tl.add(showMap());
-
-                            const imagess = document.querySelectorAll(".animated-image");
-                            imagess.forEach(image => {
-                                tl.to(image, {visibility: 'hidden', opacity: 1, y: 0, duration: 0.1})
-                                tl.to(image, {position: 'unset !important', duration: 0.1})
-                            })
-                            tl.to("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
-    
-                            tl.to("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
-    
-                            tl.to("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
-                            map.flyTo({
-                                zoom: 13,
-                                essential: true,
-                                center: [34.300712, 31.377954]
-                            })
-                            tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
-                            break;
-                        case "eleven-two":
-                            tl.add(removePreviousLayer("mawasi-two", "icon-opacity"))
-                            tl.add(addImageLayer("mawasi-two-two", getIconSize(0.5)))
-                            break;
-                        case "twelve":
-                            // Hide The Map
-                            tl.add(hideMap());
-
-                            tl.add(removePreviousLayer("mawasi-two-two", "icon-opacity"))
-                            tl.to("#twelve .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#twelve .fixed", {y: 100, duration: 0.5, clearProps: "transform"})
-                            break;
-                        case "thirteen":
-                            tl.to(".animated-video", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from(".animated-video", {y: 100, duration: 0.5, clearProps: "transform"})
-                            playVideo("#thirteen")                            
-                            break;
-                        case "fourteen":
-                            tl.to("#fourteen .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#fourteen .text-graphics", {y: 100, duration: 0.5})
-    
-                            tl.to("#fourteen-2 .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#fourteen-2 .text-graphics", {y: 100, duration: 0.5})
-                            break;
-                        case "fifteen":
-                            tl.to(".animated-video", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to(".animated-video", {position: 'unset !important', duration: 0.1})
-
-                            tl.to("#fourteen .fixed img", {visibility: "hidden", opacity: 0, y: 0, duration: 0.1})
-    
-                            tl.to("#fourteen .fixed", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#fourteen .fixed", {position: 'unset !important', duration: 0.1})
-    
-                            tl.to("#thirteen .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#thirteen .text-graphics", {position: 'unset !important', duration: 0.1})
-    
-                           
-    
-                            tl.to("#fifteen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#fifteen .content-child", {y: 100, duration: 0.5})
-    
-    
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            
-                            tl.add(showMap());
-                            if(isMobileScreen()){
-                                tl.add(addImageLayer("mawasi-three", 0.36, -42))
-                                map.flyTo({
-                                    zoom: 13,
-                                    bearing: 42,
-                                    essential: true,
-                                    center: [34.285983, 31.372169]
-                                })
-                            }else{
-                                tl.add(addImageLayer("mawasi-three", 0.36))
-                                map.flyTo({
-                                    zoom: 13,
-                                    essential: true,
-                                    center: [34.285983, 31.372169]
-                                })
-                            }
-                            
-                            break;
-                        case "seventeen":
-                            tl.add(addImageLayer("mawasi-four", getIconSize(0.4))) 
-                            // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
-                            map.flyTo({
-                                zoom: 13.2,
-                                essential: true,
-                                center: [34.296442, 31.375787]
-                            })
-                            break;
-                        case "eighteen":
-                            tl.add(removePreviousLayer("mawasi-four", "icon-opacity"));
-                            tl.add(addImageLayer("mawasi-five", getIconSize(0.4))) 
-                            break;
-                        case "eighteen-two":
-                            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
-                            tl.add(hideMap());
-                            break;
-                        case "sixteen":
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            break;
-                        case "nineteen":
-                            playVideo("#nineteen");
-                            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
-    
-                            tl.to("#map", {
-                                opacity: 0,
-                                visibility: 'none',
-                                duration: 1
-                            });
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            tl.add(removePreviousLayer("mawasi-five", "icon-opacity"))
-                            tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
-    
-                            tl.to(".animated-image-three", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from(".animated-image-three", {y: 100, duration: 0.5})
-                            break;
-                        case "twentyone":
-                            pauseVideo("#nineteen")
-                            playVideo("#twentyone")
-                            tl.to(".animated-image-three", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to(".animated-image-three", {position: 'unset !important', duration: 0.1})
-                            break;
-                        case "twentytwo":
-                            pauseVideo("#twentyone")
-                            break;
-                        case "twentythree":
-                            tl.to("#twentythree .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
-                            tl.from("#twentythree .fixed", {y: 100, duration: 0.5, clearProps: "transform"})
-                            break;
-                        case "twentyfive":
-                            tl.to("#twentythree .fixed", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-                            tl.to("#twentythree .fixed", {position: 'unset !important', duration: 0.1})
-                            break;
-                        case "twentysix":
-                            playVideo("#twentysix");
-                            break;
-                        case "twentyseven":
-                            playVideo("#twentyseven");
-                            pauseVideo("#twentysix");
-                            break;
-                        case "twentyeight":
-                            // Show The Map
-                            tl.add(showMap());
-
-                            // ,
-                            if(isMobileScreen()){
-                                tl.add(addImageLayer("mawasi-six", getIconSize(0.59))) 
-                                map.flyTo({
-                                    zoom: 13,
-                                    essential: true,
-                                    center: [34.244100, 31.334291]
-                                })
-                            }else{
-                                tl.add(addImageLayer("mawasi-six", getIconSize(0.28))) 
-                                map.flyTo({
-                                    zoom: 14,
-                                    essential: true,
-                                    center: [34.244100, 31.334291]
-                                })
-                            }
-
-                            break;
-                        case "twentynine":
-                            tl.add(removePreviousLayer("mawasi-six", 'icon-opacity'))
-                            if(isMobileScreen()){
-                                tl.add(addImageLayer("mawasi-seven", getIconSize(0.59))) 
-                            }else{
-                                tl.add(addImageLayer("mawasi-seven", getIconSize(0.28)))  
-                            }
-                            
-                            break;
-                        case "thirty":
-                            tl.add(removePreviousLayer("mawasi-seven", 'icon-opacity'))
-                            if(isMobileScreen()){
-                                tl.add(addImageLayer("mawasi-eight", getIconSize(0.59))) 
-                                map.flyTo({
-                                    zoom: 13,
-                                    essential: true,
-                                    center: [34.238093, 31.333118]
-                                })
-                            }else{
-                                tl.add(addImageLayer("mawasi-eight", getIconSize(0.28)))  
-                                map.flyTo({
-                                    zoom: 15,
-                                    essential: true,
-                                    center: [34.238093, 31.333118]
-                                })
-                            }
-                            tl.add(addImageLayer("mawasi-eight", getIconSize(0.28))) 
-                            
-                            break;
-                        case "thirtyone":
-                            // Hide The Map
-                            tl.add(hideMap());
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            tl.add(removePreviousLayer("mawasi-eight", 'icon-opacity'))
-                            // removeHalf();
-                            break;
-                    }
-                },
-                onLeaveBack:() => {
-                    const currentId = container.id;
-    
-                    if (tl) {
-                        tl.reverse();
-                        tl.progress(0);
-                    }
-    
-                    switch (currentId) {
-                        case "thirty":
-                            if(isMobileScreen()){
-                                map.flyTo({
-                                    zoom: 13,
-                                    essential: true,
-                                    center: [34.244100, 31.334291]
-                                })
-                            }else{
-                                map.flyTo({
-                                    zoom: 14,
-                                    essential: true,
-                                    center: [34.244100, 31.334291]
-                                })
-                            }
-                            break;
-                        case "twentyseven":
-                            playVideo("#twentysix");
-                            break;
-                        case "twentyeight":
-                            playVideo("#twentyseven");
-                            break;
-                        case "twentyseven":
-                            pauseVideo("#twentysix");
-                            break;
-                        case "twentysix":
-                            pauseVideo("#twentysix");
-                            break;
-                        case "twentytwo":
-                            playVideo("#twentyone");
-                            break;
-                        case "twentyone":
-                            pauseVideo("#twentyone");
-                            break;
-                        case "nineteen":
-                            pauseVideo("#nineteen");
-                            break;
-                        case "twentyone":
-                            playVideo("#nineteen");
-                            break;
-                        case "fifteen" || "fourteen":
-                            playVideo("#thirteen")
-                            break;
-                        case "twelve":
-                            map.flyTo({
-                                zoom: 13,
-                                essential: true,
-                                center: [34.300712, 31.377954]
-                            })
-                            break;
-                        case "thirtyone":
-                            if(isMobileScreen()){
-                                map.flyTo({
-                                    zoom: 13,
-                                    essential: true,
-                                    center: [34.238093, 31.333118]
-                                })
-                            }else{
-                                map.flyTo({
-                                    zoom: 15,
-                                    essential: true,
-                                    center: [34.238093, 31.333118]
-                                })
-                            }
-                            break;
-                        case "nineteen":
-                            map.flyTo({
-                                zoom: 15,
-                                essential: true,
-                                center: [34.296442, 31.375787]
-                            })
-                            break;
-                        case "eighteen":
-                            
-                         break;
-                         case "eighteen-two":
-                            map.flyTo({
-                                zoom: 13.2,
-                                essential: true,
-                                center: [34.296442, 31.375787]
-                            })
-                         break;
-                        case "seventeen":
-                            map.flyTo({
-                                zoom: 13,
-                                essential: true,
-                                center: [34.285983, 31.375169]
-                            })
-                            break;
-                        case "sixteen":
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            break;
-                        case "eight":
-                            map.flyTo({
-                                zoom: 12,
-                                center: [34.267808, 31.350360]
-                            })
-                            break;
-                        case "seven-two":
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            break;
-                        case "six":
-                            map.flyTo({
-                                center: [34.27204, 31.23714],
-                                essential: true,
-                                zoom: 13.5
-                            })
-                            break;
-                        case "four":
-                            map.flyTo({
-                                center: [34.242789, 31.308767],
-                                essential: true,
-                                zoom: 14
-                            });
-                            break;
-                        case "three-two":
-                            map.fitBounds(getGazaBounds(), {
-                                padding: { top: 20, bottom: 20, left: 20, right: 20 },
-                                maxZoom: 15, 
-                                duration: 1000
-                            });
-                            break;
-                        case "one":
-                            removeAll();
-                            break;
-                    }
-                }
-            });
-        }
-       
+                fastScrollEnd: true,
+                scrub: 0.1,
+                onEnter: () => animate(container, tl),
+                onLeaveBack: () => animateBack(container, tl),
+            }
+        });
     });
+
     init();
 })
 
@@ -1383,6 +1513,7 @@ const addFeaturesOneByOne = (features, delay, group) => {
             gsap.to({ opacity: 0 }, {
                 opacity: 1,
                 duration: 1,
+                ease: "power2.out",
                 onUpdate: function () {
                     map.setPaintProperty('main-destruction', 'circle-opacity', this.targets()[0].opacity);
                 }
@@ -1430,11 +1561,12 @@ const addNewLayer = (id, _data, type, paint, before, options = {}) => {
     }catch(error){
         console.log(error);
     }
-
+    let miniTimeline = gsap.timeline();
     if(map.getLayer(id)){
-        return gsap.to({ opacity: 0 }, {
+        return miniTimeline.to({ opacity: 0 }, {
             opacity: animationOpacity,
             duration: duration,
+            ease: "power2.out",
             onUpdate: function () {
                 map.setPaintProperty(id, opacityProperty, this.targets()[0].opacity);
             }
@@ -1444,28 +1576,31 @@ const addNewLayer = (id, _data, type, paint, before, options = {}) => {
 }
 
 const removePreviousLayer = (layerId, property, remove = false, duration = 0.2) => {
-    return gsap.to({ opacity: 1 }, {
-        opacity: 0,
-        duration: duration,
-        onUpdate: function () {
-            if(map.getLayer(layerId)){
-                if(remove){
-                    map.removeLayer(layerId);
-                }
-                map.setPaintProperty(layerId, property, this.targets()[0].opacity);
-                setTimeout(() => {
-                    map.setLayoutProperty(layerId, "visibility", this.targets()[0].opacity >= 1 ? 'visible' : 'none')
-                }, 1000)
-            }
-        },
-    });
+    let miniTimeline = gsap.timeline();
+    if(map.getLayer(layerId)){
+        return miniTimeline.to({ opacity: 1 }, {
+            opacity: 0,
+            duration: duration,
+            ease: "power2.out",
+            onUpdate: function () {
+                    if(remove){
+                        map.removeLayer(layerId);
+                        unloadLocalImage(layerId);
+                    }else{
+                        map.setPaintProperty(layerId, property, this.targets()[0].opacity);
+                        map.setLayoutProperty(layerId, "visibility", this.targets()[0].opacity >= 1 ? 'visible' : 'none')
+                    }
+            },
+        });
+    }
 };
 
 // Function to show the map
 function showMap() {
     return gsap.to("#map", {
         opacity: 1,
-        duration: 0.5
+        duration: 0.5,
+        ease: "power2.out"
     });
 }
 
@@ -1473,7 +1608,8 @@ function showMap() {
 function hideMap() {
     return gsap.to("#map", {
         opacity: 0,
-        duration: 0.5
+        duration: 0.5,
+        ease: "power2.out"
     });
 }
 
@@ -1481,6 +1617,7 @@ const switchLabelsVisibility = (visibility, labels, duration = 0.5) => {
     labels.forEach(label => {
         gsap.from({}, {
             duration: duration,
+            ease: "power2.out",
             onUpdate: function () {
                 map.setLayoutProperty(label, 'visibility', visibility);
             }

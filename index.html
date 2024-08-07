@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaza</title>
+    <!-- <meta name="description" content="تحقيق يوثق عدة  هجمات على المناطق الأنسانية  في قطاع غزة مع  تواصل العمليات الإسرائيلية التي ثبت تورطها في ارتكاب انتهاكات جسيمة ضد المدنيين. وقد أصبح التوثيق البصري لهذه الهجمات عاملًا أساسيًا لضمان عدم إفلات المسؤولين عنها من العقاب. يُظهر التحقيق تكرار فرار المدنيين من الاستهداف والهجمات، التي  تستمر حتى الان.">
+    <meta name="keywords" content="قطاع غزة،
+    المناطق المدنية،
+    هجمات إسرائيلية،
+    انتهاكات حقوق الإنسان،
+    الصراع في غزة،
+    توثيق الانتهاكات،
+    المناطق الآمنة">
+    <title>استهداف الملاذات: القصف على المناطق الآمنة في غزة</title>
+    <meta name="robots" content="nofollow">
+    <meta name="googlebot-news" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"> -->
     <link rel="stylesheet" href="css/style.css">
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css' />
     <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
-    <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
 </head>
 <body>
+    <div id="unique-warning-container"></div>
     <div id="loading-screen">
         <div class="spinner"></div>
         <p class="spinner-text">جاري التحميل</p>
@@ -41,8 +51,8 @@
 
         <div id="two" class="content-container right-left bottom-top">
             <p class="content-child flexible ">
-                ثم قامت إسرائيل بتقسيم المنطقة إلى إقطاعات <a href="https://www.idf.il/ar/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/swordsofiron-011223-150/" target="_blank">"بلوكـــات"</a> بأرقام محددة في ديسمبر /كانون الأول؛ مستمرةً فــي إطلاق أوامر الإخلاء والانتقـــال كذريعة للتنصل عن مسؤوليتها فــي استهداف المدنيين             </p>
-
+                ثم قامت إسرائيل بتقسيم المنطقة إلى إقطاعات <a href="https://www.idf.il/ar/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D8%AF%D9%81%D8%A7%D8%B9-%D8%A7%D9%84%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84%D9%8A/swordsofiron-011223-150/" target="_blank">"بلوكـــات"</a> بأرقام محددة في ديسمبر /كانون الأول؛ مستمرةً فــي إطلاق أوامر الإخلاء والانتقـــال كذريعة للتنصل عن مسؤوليتها فــي استهداف المدنيين             
+            </p>
             <p class="content-child flexible ">
                 آخرها إعلان القوات الإسرائيلية عن بدء عملياتها البرية في شرق مدينة رفح جنوب القطاع في 6 مايو/أيار 2024، طالبةً من النازحين الانتقال الى المنطقة الآمنة حيث كانت رفح منذ بداية الأحداث إلى تاريخ الإعلان منطقة آمنة للنزوح وملجأ للعديد من المدنيين في غزة، ما اضطرهم الاجتياح الأخير للنزوح مجددًا.
             </p>
@@ -55,13 +65,15 @@
         </div>
 
         <div id="two-three" class="content-container left top graphics">
-            <p class="content-child fixed top-left flexible w-30">
-                مع استمرار إلقاء مناشير الإخلاء للشمال وانتقال المدنيين للجنوب، نُشرت <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl">أوامر جديدة</a> في ١٣ ديسمبر/كانون الأول ٢٠٢٣ تطلب من سكان منطقة خان يونس بالنزوح الى مناطق تل السلطان والزهور والشابورة، ومن ثم <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl" target="_blank">إخلاء</a> بعض مناطق جنوب وادي غزة نحو المآوي في دير البلح.
+            <p class="content-child top-left flexible w-30">
+                مع استمرار إلقاء مناشير الإخلاء للشمال وانتقال المدنيين للجنوب
             </p>
         </div>
 
-        <div id="two-four" class="content-container right-left bottom-top">
-
+        <div id="two-four" class="content-container left top graphics">
+            <p class="content-child top-left flexible w-30">
+                نُشرت <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl">أوامر جديدة</a> في ١٣ ديسمبر/كانون الأول ٢٠٢٣ تطلب من سكان منطقة خان يونس بالنزوح الى مناطق تل السلطان والزهور والشابورة، ومن ثم <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid02SkbnHP3qN1huBUBWoFp3XQ2nzGM8AQqsv4fChSuo4HZGRbQqUAsi9Yq5H7jgYT5sl" target="_blank">إخلاء</a> بعض مناطق جنوب وادي غزة نحو المآوي في دير البلح.
+            </p>
         </div>
 
         <div id="two-five" class="content-container left top single">
@@ -227,25 +239,7 @@
                     </p>
                     <img class="arrow-bottom-left" src="./assets/icons/migration_arrow_4.svg" alt="">
                 </div>
-                <!-- <video
-                id="my-video"
-                class="video-js"
-                prepreload="auto" 
-                width="640"
-                height="264"
-                data-setup="{}"
-                >
-                <source src="assets/videos/1.mp4" type="video/mp4" />
-                <p class="vjs-no-js">
-                To view this video please enable JavaScript, and consider upgrading to a
-                web browser that
-                <a href="https://videojs.com/html5-video-support/" target="_blank"
-                    >supports HTML5 video</a
-                >
-                </p>
-            </video> -->
-
-                <video preload="auto" width="320" height="240" class="center spice animated-video" >
+                <video preload="auto" width="320" height="240" class="center spice animated-video" controls>
                     <source src="./assets/videos/1.mp4" type="video/mp4">
                 </video>
             </div>
@@ -288,7 +282,7 @@
 
         <div id="nineteen" class="content-container center graphics">
             <div class="content-child flexible">
-                <video preload="auto" width="320" height="240" class="center spice animated-image-three" >
+                <video preload="auto" width="320" height="240" class="center spice animated-image-three" controls>
                     <source src="./assets/videos/2.mp4" type="video/mp4">
                 </video>
             </div>
@@ -316,7 +310,7 @@
                     We are talking about munition with 17 Kilos of explosive materiel <br>
                     <span class="source">Daniel Hagari</span>
                 </p>
-                <video preload="auto" width="320" height="240" class="center-h spice object-contain">
+                <video preload="auto" width="320" height="240" class="center-h spice daniel-video" poster="/assets/videos/3_poster.png">
                     <source src="./assets/videos/3.mp4" type="video/mp4">
                 </video>
             </div>
@@ -324,7 +318,7 @@
 
         <div id="twentytwo" class="content-container center graphics">
             <div class="content-child flexible">
-                <img src="./assets/SDB-GBU.png" alt="" class="center-h">
+                <img src="./assets/SDB-GBU.png" alt="" class="center-h sdb">
                 <div class="text-graphics flexible center-bottom-bottom z-top">
                     <p class="semi-bold font-s-24 margin-bottom-20">
                         بينما ظهرت بقايا القذيفة المستخدمة في الهجوم في فيديو نشره أحد المستخدمين على تليجرام، تعود إلى إحدى <span class="highlighted">القنابـل الأمريكيــة من نوع  SDB-GBU-39</span> ، كانت البقايا تعود لنظام تشغيل الذيل، الذي يتحكم في الزعانف التي توجه القنبلة إلى الهدف. استخدام <span class="highlighted">ذخيرتين تزن 17 كجم (37 باوند)</span> في هجومها <span class="highlighted">على المخيم في رفح</span>.
@@ -348,7 +342,7 @@
                         بينما ظهرت بقايا القذيفة المستخدمة في الهجوم في فيديو نشره أحد المستخدمين على تليجرام، تعود إلى إحدى <span class="highlighted">القنابـل الأمريكيــة من نوع  SDB-GBU-39</span> ، كانت البقايا تعود لنظام تشغيل الذيل، الذي يتحكم في الزعانف التي توجه القنبلة إلى الهدف. استخدام <span class="highlighted">ذخيرتين تزن 17 كجم (37 باوند)</span> في هجومها <span class="highlighted">على المخيم في رفح</span>.
                     </p>
                 </div>
-                <div class="text-graphics flexible center-left fixed">
+                <div class="text-graphics flexible center-left">
                     <p>
                         GBU-39 SDB
                     </p>
@@ -394,9 +388,9 @@
                     <p>
                         81873
                     </p>
-                    <img src="./assets/icons/arrow_long.svg" alt="" class="arrow-left-center" style="scale: 2; left: 100%">
+                    <img src="./assets/icons/arrow_long.svg" alt="" class="arrow-left-center" style="scale: 2; left: 150%">
                 </div>
-                <img src="./assets/table.svg" alt="" class="center-bottom-bottom" style="width: 90%; height: 25%">
+                <img src="./assets/table.svg" alt="" class="center-bottom-bottom" style="width: 90%; height: 20%">
             </div>
         </div>
 
@@ -412,7 +406,7 @@
                         مقابلة مع إحدى الناجيات من قصف خيام المواصي، تتحدث عن تتابع دورات النزوح والتي لم تحميهم من الموت أيضًا.
                     </p>
                 </div>
-                <video preload="auto" width="320" height="240" class="center spice object-contain" >
+                <video preload="auto" width="320" height="240" class="center spice object-contain" controls>
                     <source src="./assets/Audio/1.mp4" type="video/mp4">
                 </video>
             </div>
@@ -426,7 +420,7 @@
                         ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، كانت بعض الخيام قد انهارت وبعضها الآخر مُلئ بالثقوب إثر تطاير شظايا المقذوف.​
                     </p>
                 </div>
-                <video preload="auto" width="320" height="240" class="center spice width-moderate aljazera" >
+                <video preload="auto" width="320" height="240" class="center spice width-moderate aljazera" controls>
                     <source src="./assets/videos/4.mp4" type="video/mp4">
                 </video>
             </div>
@@ -435,7 +429,7 @@
         <div id="twentyeight" class="content-container left single">
             <div class="content-child flexible top-20">
                 <p class="font-s-24 margin-bottom-20">
-                    كان التأثير واضحًا في صور الأقمار الصناعية الحديثة بتـــاريخ <b>30  يونيو/حزيران 2024</b>، يمكــن ملاحــظة بقعة وانطمار بعض الخيام.​
+                    كان التأثير واضحًا في صور الأقمار الصناعية الحديثة بتـــاريخ <b>30  مايو/أيار 2024</b>، يمكــن ملاحــظة بقعة وانطمار بعض الخيام.​
                 </p>
             </div>
         </div>
@@ -460,9 +454,9 @@
             <div class="content-child flexible">
                 <img src="./assets/refugees.png" alt="" class="center-bottom-bottom h-40">
                 <img src="./assets/gaza_map_with_arrows.svg" alt="" class="top-right">
-                <div class="text-graphics flexible center-top z-top">
+                <div class="text-graphics flexible center-top-text z-top">
                     <p class="semi-bold font-s-24 margin-bottom-20">
-                        مازال النازحون في قطاع غزة يضطرون كل يومٍ للنزوح لمناطق يعلن أنها آمنة ولكنهم يتفاجأون في كل مرة أنهم يقصفون في خيام نزوحهم. لم تتوقف دائرة النزوح إلى لحظة كتابة هذا التحقيق ولم تتوقف تباعًا الهجمات على المخيمات والنازحين أيضًا ذكرت الأونروا في تقريرها أنه حتى<b> 27 أيار</b>، قتل ما لا يقل عن <b>36,050</b> فلسطينيًا في قطاع غزة منذ <b> 7 تشرين الأول 2023.<b/> بالإضافة إلى <b>81,026</b> فلسطينيًا آخر قد أصيبوا بجروح.​
+                        مازال النازحون في قطاع غزة يضطرون كل يومٍ للنزوح لمناطق يعلن أنها آمنة ولكنهم يتفاجأون في كل مرة أنهم يقصفون في خيام نزوحهم. لم تتوقف دائرة النزوح إلى لحظة كتابة هذا التحقيق ولم تتوقف تباعًا الهجمات على المخيمات والنازحين أيضًا ذكرت الأونروا في تقريرها أنه حتى <b>27 أيار</b>، قتل ما لا يقل عن <b>36,050</b> فلسطينيًا في قطاع غزة منذ <b>7  تشرين الأول 2023</b>. بالإضافة إلى <b>81,026 </b>فلسطينيًا آخر قد أصيبوا بجروح.​
                     </p>
                 </div>
             </div>
@@ -479,18 +473,39 @@
                 </div>
             </div>
         </div>
+
+        <div id="thirtythree" class="content-container center">
+            <div class="content-child flexible">
+                <h2 class="highlighted">ملاحظة المحرر </h2>
+                <p>
+                    هذا التحقيق هو واحد من عدة تحقيقات مفتوحة المصدر تم إنتاجها من قبل فريق نوى ميديا للاستجابة لتغطية الحرب في غزة. 
+<br>
+ونظرًا للعنف المتصاعد بسرعة، فإن الأرقام هي سجل تاريخي لذلك الوقت، وليست انعكاسًا للواقع الحالي. 
+<br>
+ومن خلال هذه التحقيقات، نهدف إلى المساهمة في مجموعة المؤشرات حول جرائم الحرب والجرائم ضد الإنسانية في قطاع غزة. ولهذا السبب، يستخدم مؤلفو هذه التحقيقات لغة دقيقة وحذرة تساعد في تعزيز ملاحقة مرتكبي هذه الجرائم في المحاكم الدولية.
+                </p>
+                <h2 class="highlighted">فـريـق نـوى مـيـديـا</h2>
+                <p>
+                    إعداد :زهرة القدسي<br> 
+                    الدعم التقني : حسين خليل  <br>
+                    الإعداد البصري :  بيان عثمان <br>
+                    الاشراف العام : عبد الرحمن جلود <br>
+                </p>
+            </div>
+        </div>
     </div>
     <!-- End Content -->
 
 
     <div id="map"></div>
 
-    <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
+
+    <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script> 
 
     <!-- GSAP Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <!-- ./GSAP Plugins -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/main.js" type="module"></script>
 </body>
 </html>
