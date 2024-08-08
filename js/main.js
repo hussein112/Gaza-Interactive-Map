@@ -484,6 +484,9 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                     'icon-allow-overlap': true,
                     'icon-anchor': 'center',
                     'icon-rotate': rotation,
+                },
+                'paint': {
+                    'icon-opacity': 0
                 }
             }, before);
         }else{
@@ -502,15 +505,22 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
                     'icon-allow-overlap': true,
                     'icon-anchor': 'center',
                     'icon-rotate': rotation,
+                },
+                'paint': {
+                    'icon-opacity': 0
                 }
             });
         }
     }
     if(map.getLayer(name)){
         let miniTimeline = gsap.timeline();
+        console.log("On");
         return miniTimeline.to({ opacity: 0 }, {
             opacity: 1,
             duration: duration,
+            onStart: () => {
+                console.log(name);
+            },
             ease: "power2.out",
             onUpdate: function () {
                 map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
@@ -700,6 +710,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Error loading video:" + e);
         });
         video.load();
+        video.addEventListener('canplay', () => {
+            document.getElementById("loading-icon").style.display = 'none';
+        });
     });
     loadHalfOne();
     showLoading();
@@ -721,8 +734,7 @@ async function animate(container, tl){
             end: "bottom bottom",
             toggleActions: "play none none reverse",
             preventOverlaps: true,
-            fastScrollEnd: true,
-            scrub: 0.1,
+            fastScrollEnd: true
         }
     })
     const currentId = container.id;
@@ -787,10 +799,11 @@ async function animate(container, tl){
                 'fill-color': '#FFDAD7e0',
                 'fill-opacity': 1,
             }, 'gaza-block'))
-            tl.add(addNewLayer('evac-area-three-three', evac_area_3_3, 'fill', {
-                'fill-color': '#FFDAD7e0',
+            tl.add(addNewLayer('evac-area-three-one', evac_area_3_1, 'fill', {
+                'fill-color': '#006579e0',
                 'fill-opacity': 1,
             }, 'gaza-block'))
+            
             tl.add(addNewLayer('evac-area-three-two', evac_area_3_2, 'fill', {
                 'fill-color': '#006579e0',
                 'fill-opacity': 1,
@@ -806,9 +819,14 @@ async function animate(container, tl){
         case "two-five":
             tl.add(removePreviousLayer("evac-area-one", 'fill-opacity'));
             tl.add(removePreviousLayer("evac-area-two", 'fill-opacity'));
+            tl.add(removePreviousLayer("evac-area-three-one", 'fill-opacity'));
             tl.add(removePreviousLayer("evac-area-three-two", 'fill-opacity'));
             tl.add(removePreviousLayer("arrow-2", 'icon-opacity'));
             tl.add(removePreviousLayer("arrow-2-2", 'icon-opacity'));
+            tl.add(addNewLayer('evac-area-three-three', evac_area_3_3, 'fill', {
+                'fill-color': '#FFDAD7e0',
+                'fill-opacity': 1,
+            }, 'gaza-block'))
             // Show Evacuation Area 5
             tl.add(addNewLayer('evac-area-five', evac_area_5, 'fill', {
                 'fill-color': '#006579e0',
@@ -818,15 +836,13 @@ async function animate(container, tl){
             tl.add(addImageLayer("arrow-3", getIconSize(0.9, true)))
             break;
         case "three-two":
-            tl.add(removePreviousLayer("evac-area-three-one", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-three-three", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-four", "fill-opacity"))
-            tl.add(removePreviousLayer("evac-area-one", "fill-opacity"))
             tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
             tl.add(removePreviousLayer("arrow-3", 'icon-opacity'));
 
             tl.to("#three-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#three-two .content-child", {y: 100, duration: 0.5})
+            tl.from("#three-two .content-child", {y: 100, duration: 0.1})
             
 
             // const textSource = {
@@ -1487,7 +1503,6 @@ map.on('load', async () => {
                 end: "bottom bottom",
                 preventOverlaps: true,
                 fastScrollEnd: true,
-                scrub: 0.1,
                 onEnter: () => animate(container, tl),
                 onLeaveBack: () => animateBack(container, tl),
             }

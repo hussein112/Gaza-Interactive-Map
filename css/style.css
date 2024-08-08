@@ -241,6 +241,25 @@ html.lenis, html.lenis body {
     cursor: pointer;
 }
 
+#loading-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 5px solid #373737;
+  border-top: 5px solid #006579;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 #loading-screen {
     position: fixed;
     top: 0;
@@ -585,7 +604,7 @@ html.lenis, html.lenis body {
 video{
     background-color: #373737;
     top: 50% !important;
-    height: 80%;
+    height: 81%;
     object-fit: cover;
 }
 
@@ -640,6 +659,10 @@ video::-ms-media-controls {
 
 .object-contain{
     object-fit: contain;
+}
+
+.audio{
+    height: 60% !important;
 }
 
 .h-25{ /* Unresponsive */
@@ -1062,7 +1085,7 @@ video::-ms-media-controls {
 
 .scroll-down a::after{
     content: '';
-    background: url("/assets/scroll.svg") no-repeat;
+    background: url("assets/scroll.svg") no-repeat;
     position: absolute;
     bottom: -25%;
     left: 50%;
