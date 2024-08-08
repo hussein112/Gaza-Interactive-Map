@@ -66,6 +66,10 @@ html.lenis, html.lenis body {
 
 
 @media (max-width: 992px){
+    .zoom-rose-bold,
+    .recolor{
+        color: #FFDAD7;
+    }
     .zoom-rose-bold.flexible{
         background-color: unset;
     }
@@ -436,6 +440,12 @@ html.lenis, html.lenis body {
     z-index: -1;
 }
 
+@media (max-width: 768px){
+    .quote-general::after{
+        height: 90px;
+    }
+}
+
 @media (max-width: 576px){
     .quote-general::after{
         height: 41px;
@@ -463,6 +473,12 @@ html.lenis, html.lenis body {
     font-weight: 300;
     font-size: 12px;
     float: right;
+}
+
+@media (max-width: 768px){
+    .quote-general .source{
+        color: white;
+    }
 }
 
 .content-child.image-with-caption.quote{
@@ -902,6 +918,13 @@ video::-ms-media-controls {
     width: 30%;
 }
 
+
+@media (max-width: 768px){
+    .graphics .center-right-text{
+        right: unset;
+    }
+}
+
 @media (max-width: 578px){
     .graphics .center-right-text{
         width: 90%;
@@ -997,6 +1020,7 @@ video::-ms-media-controls {
     width: 200%;
 }
 
+
 @media (max-width: 772px){
     .arrow-left-center{
         display: none;
@@ -1085,7 +1109,7 @@ video::-ms-media-controls {
 
 .scroll-down a::after{
     content: '';
-    background: url("assets/scroll.svg") no-repeat;
+    background: url("/assets/scroll.svg") no-repeat;
     position: absolute;
     bottom: -25%;
     left: 50%;
@@ -1158,6 +1182,12 @@ video::-ms-media-controls {
     height: 50% !important;
 }
 
+@media(max-width: 768px){
+    .aljazera{
+        width: 87% !important;
+    }
+}
+
 @media(max-width: 576px){
     .aljazera{
         object-fit: contain;
@@ -1168,6 +1198,12 @@ video::-ms-media-controls {
     top: 25%;
     left: 24%;
     width: 80px;
+}
+
+@media (max-width: 768px){
+    .gaza-map-on-video{
+        left: 6.5%;
+    }
 }
 
 @media (max-width: 576px){

@@ -206,7 +206,7 @@ function showLoading(){
 
     // Function to watch areAllSVGsLoaded and dispatch event when true
     function watchSVGLoading() {
-        if (areHalfOneLoaded()) {
+        if (areHalfOneLoaded() && ready) {
             const event = new CustomEvent(SVG_LOADED_EVENT);
             document.dispatchEvent(event);
             hideLoadingScreen();
@@ -413,7 +413,7 @@ function areAllMainImagesLoaded(){
 
 function areHalfOneLoaded(){
     let sImages = [];
-    for(let i = 0; i < svgImages.length / 2; i++){
+    for(let i = 0; i < 8; i++){
         sImages.push(svgImages[i]);
     }
     return sImages.every(img => loadedImages[img.id] === true);
@@ -514,13 +514,9 @@ function addImageLayer(name, size, rotation=0, duration=0.1, before=false){
     }
     if(map.getLayer(name)){
         let miniTimeline = gsap.timeline();
-        console.log("On");
         return miniTimeline.to({ opacity: 0 }, {
             opacity: 1,
             duration: duration,
-            onStart: () => {
-                console.log(name);
-            },
             ease: "power2.out",
             onUpdate: function () {
                 map.setPaintProperty(name, 'icon-opacity', this.targets()[0].opacity);
@@ -666,14 +662,9 @@ const map = new maplibregl.Map({
     interactive: false
 });
 
-function removeHalfOne(){
-    for(let i = 0; i < (svgImages.length / 2); i++){
-        removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
-    }
-}
 
 async function loadHalfOne(){
-    for(let i = 0; i < (svgImages.length / 2); i++){
+    for(let i = 0; i < 8; i++){
         await loadLocalImage(svgImages[i].id, svgImages[i].path, svgImages[i].coordinates);
         loadedImages[svgImages[i].id] = true;
     }
@@ -682,19 +673,31 @@ async function loadHalfOne(){
 
 
 function removeHalfTwo(){
-    for(let i = svgImages.length - 1; i > (svgImages.length / 2); i--){
+    for(let i = 8; i > 14; i++){
         removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
     }
 }
 
 async function loadHalfTwo(){
-    for(let i = svgImages.length - 1; i > (svgImages.length / 2); i--){
+    for(let i = 7; i < 14; i++){
+        await loadLocalImage(svgImages[i].id, svgImages[i].path, svgImages[i].coordinates);
+        loadedImages[svgImages[i].id] = true;
+    }
+    return true;
+}
+async function loadHalfTwoPartTwo(){
+    for(let i = 14; i < 20; i++){
         await loadLocalImage(svgImages[i].id, svgImages[i].path, svgImages[i].coordinates);
         loadedImages[svgImages[i].id] = true;
     }
     return true;
 }
 
+function removeHalfTwoPartTwo(){
+    for(let i = 14; i > 20; i++){
+        removePreviousLayer(svgImages[i].id, 'icon-opacity', true);
+    }
+}
 
 function removeAll(){
     for(let i = 0; i < svgImages.length; i++){
@@ -711,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         video.load();
         video.addEventListener('canplay', () => {
-            document.getElementById("loading-icon").style.display = 'none';
+            video.previousElementSibling.style.display = 'none';
         });
     });
     loadHalfOne();
@@ -891,6 +894,7 @@ async function animate(container, tl){
             });
             break;
         case "three-three":
+            loadHalfTwo();
             // Remove Second Image
             tl.add(removePreviousLayer('rafah', 'icon-opacity'));
             
@@ -913,7 +917,7 @@ async function animate(container, tl){
             break;
         case "five":
             tl.to("#five .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#five .content-child", {y: 100, duration: 0.5})
+            tl.from("#five .content-child", {y: 100, duration: 0.1})
             // Show The Map
             tl.add(showMap());
             map.flyTo({
@@ -931,7 +935,6 @@ async function animate(container, tl){
             tl.add(addImageLayer("south-three", getIconSize(0.3)))
             break;
         case "six":
-            loadHalfTwo();
             tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to("#five .content-child", {position: 'unset !important', duration: 0.1})
             // Hide The Map
@@ -941,7 +944,7 @@ async function animate(container, tl){
             break;
         case "seven":
             tl.to("#seven .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#seven .content-child", {y: 100, duration: 0.5})
+            tl.from("#seven .content-child", {y: 100, duration: 0.1})
             // Show The Map
             tl.add(showMap());
 
@@ -994,20 +997,20 @@ async function animate(container, tl){
             const images = document.querySelectorAll(".animated-image");
             images.forEach(image => {
                 tl.to(image, {visibility: 'visible', opacity: 1, duration: 0.1})
-                tl.from(image, {y: 100, duration: 0.5, clearProps: "transform"})
+                tl.from(image, {y: 100, duration: 0.1, clearProps: "transform"})
             })
             break;
         case "ten-two":
             tl.to("#ten-two .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.5})
+            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.1})
             break;
         case "ten-three":
             tl.to("#ten-three .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.5})
+            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.1})
             break;
         case "ten-four":
             tl.to("#ten-four .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.5})
+            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.1})
             break;
         case "eleven":
             // Show The Map
@@ -1032,6 +1035,7 @@ async function animate(container, tl){
                 center: [34.300712, 31.377954]
             })
             tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
+            loadHalfTwoPartTwo();
             break;
         case "eleven-two":
             tl.add(removePreviousLayer("mawasi-two", "icon-opacity"))
@@ -1043,19 +1047,16 @@ async function animate(container, tl){
 
             tl.add(removePreviousLayer("mawasi-two-two", "icon-opacity"))
             tl.to("#twelve .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#twelve .fixed", {y: 100, duration: 0.5, clearProps: "transform"})
+            tl.from("#twelve .fixed", {y: 100, duration: 0.1, clearProps: "transform"})
             break;
         case "thirteen":
             tl.to(".animated-video", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from(".animated-video", {y: 100, duration: 0.5, clearProps: "transform"})
+            tl.from(".animated-video", {y: 100, duration: 0.1, clearProps: "transform"})
             playVideo("#thirteen")                            
             break;
         case "fourteen":
             tl.to("#fourteen .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#fourteen .text-graphics", {y: 100, duration: 0.5})
-
-            tl.to("#fourteen-2 .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#fourteen-2 .text-graphics", {y: 100, duration: 0.5})
+            tl.from("#fourteen .text-graphics", {y: 100, duration: 0.1})
             break;
         case "fifteen":
             tl.to(".animated-video", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1072,7 +1073,7 @@ async function animate(container, tl){
             
 
             tl.to("#fifteen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#fifteen .content-child", {y: 100, duration: 0.5})
+            tl.from("#fifteen .content-child", {y: 100, duration: 0.1})
 
 
             map.fitBounds(getGazaBounds(), {
@@ -1144,7 +1145,7 @@ async function animate(container, tl){
             tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
 
             tl.to(".animated-image-three", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from(".animated-image-three", {y: 100, duration: 0.5})
+            tl.from(".animated-image-three", {y: 100, duration: 0.1})
             break;
         case "twentyone":
             pauseVideo("#nineteen")
@@ -1363,6 +1364,7 @@ async function animateBack(container, tl){
             break;
         case "six":
             removeHalfTwo();
+            removeHalfTwoPartTwo();
             map.flyTo({
                 center: [34.27204, 31.23714],
                 essential: true,
@@ -1385,6 +1387,11 @@ async function animateBack(container, tl){
             break;
     }
 }
+let ready = false;
+map.on('idle', (e) => {
+    ready = true;
+});
+
 map.on('load', async () => {
     map.fitBounds(getGazaBounds(), {
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
@@ -1624,7 +1631,7 @@ const removePreviousLayer = (layerId, property, remove = false, duration = 0.2) 
 function showMap() {
     return gsap.to("#map", {
         opacity: 1,
-        duration: 0.5,
+        duration: 0.1,
         ease: "power2.out"
     });
 }
@@ -1633,7 +1640,7 @@ function showMap() {
 function hideMap() {
     return gsap.to("#map", {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.1,
         ease: "power2.out"
     });
 }
