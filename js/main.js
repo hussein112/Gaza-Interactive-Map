@@ -294,6 +294,27 @@ const pauseVideo = (container) => {
 }
 
 let loadedImages = {};
+function changeImage(image, newImage) {
+    const prevImage = image.getAttribute("src");
+    return gsap.to(image, {
+        // duration: 0.5,
+        // opacity: 0,
+        onComplete: () => {
+            gsap.to(image, {
+                opacity: 1,
+                duration: 0.5
+            })
+            image.setAttribute("src", newImage)
+        },
+        onReverseComplete: () => {
+            image.setAttribute("src", prevImage);
+            gsap.to(image, {
+                opacity: 1,
+                duration: 0.5
+            })
+        },
+    });
+}
 
 // async function loadLocalSVGImage(name, path, coordinates) {
 //     // Fetch the SVG image as a text string
@@ -740,6 +761,7 @@ async function animate(container, tl){
             fastScrollEnd: true
         }
     })
+    tl.to(container, {opacity: 1, duration: 0.5 })
     const currentId = container.id;
     switch (currentId) {
         case "one":
@@ -844,10 +866,6 @@ async function animate(container, tl){
             tl.add(removePreviousLayer("evac-area-five", "fill-opacity"))
             tl.add(removePreviousLayer("arrow-3", 'icon-opacity'));
 
-            tl.to("#three-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#three-two .content-child", {y: 100, duration: 0.1})
-            
-
             // const textSource = {
             //     type: 'geojson',
             //     data: {
@@ -909,34 +927,28 @@ async function animate(container, tl){
             tl.add(addImageLayer("rafah-three", getIconSize(0.23)))
             break;
         case "four":
-            tl.to("#three-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#three-two .content-child", {position: 'unset !important', duration: 0.1})
             tl.add(removePreviousLayer("rafah-three", 'icon-opacity'))
             // Hide The Map
             tl.add(hideMap());
             break;
-        case "five":
-            tl.to("#five .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#five .content-child", {y: 100, duration: 0.1})
-            // Show The Map
+        case "five-two":
             tl.add(showMap());
+            tl.to("#five-two .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#five-two .content-child", {y: 100, duration: 0.1})
+            // Show The Map
             map.flyTo({
                 center: [34.27204, 31.23714],
                 essential: true,
                 zoom: 13.5
             })
-            tl.add(addImageLayer("south-one", getIconSize(0.3)))
-            break;
-        case "five-two":
             tl.add(addImageLayer("south-two", getIconSize(0.3)))
-            tl.add(removePreviousLayer("south-one", "icon-opacity"))
             break;
         case "five-three":
             tl.add(addImageLayer("south-three", getIconSize(0.3)))
             break;
         case "six":
-            tl.to("#five .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#five .content-child", {position: 'unset !important', duration: 0.1})
+            tl.to("#five-two .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#five-two .content-child", {position: 'unset !important', duration: 0.1})
             // Hide The Map
             tl.add(hideMap());
             tl.add(removePreviousLayer("south-two", "icon-opacity"))
@@ -1002,33 +1014,32 @@ async function animate(container, tl){
             break;
         case "ten-two":
             tl.to("#ten-two .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.1})
+            tl.from("#ten-two .content-child .text-graphics", {y: 100, duration: 0.1, clearProps: "transform"})
             break;
         case "ten-three":
             tl.to("#ten-three .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.1})
+            tl.from("#ten-three .content-child .text-graphics", {y: 100, duration: 0.1, clearProps: "transform"})
             break;
         case "ten-four":
             tl.to("#ten-four .content-child .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.1})
+            tl.from("#ten-four .content-child .text-graphics", {y: 100, duration: 0.1, clearProps: "transform"})
             break;
         case "eleven":
-            // Show The Map
-            tl.add(showMap());
-
             const imagess = document.querySelectorAll(".animated-image");
             imagess.forEach(image => {
-                tl.to(image, {visibility: 'hidden', opacity: 1, y: 0, duration: 0.1})
+                tl.set(image, {visibility: 'hidden', opacity: 1, y: 0, duration: 0.1})
                 tl.to(image, {position: 'unset !important', duration: 0.1})
             })
-            tl.to("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
-
-            tl.to("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
-
-            tl.to("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+            tl.set("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
+            tl.set("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
+            tl.set("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
+            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
+            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
+            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
+            // Show The Map
+            console.log(tl.scrollTrigger);
+            console.log(tl.scrollTrigger.getTween());
+            tl.add(showMap());
             map.flyTo({
                 zoom: 13,
                 essential: true,
@@ -1070,11 +1081,8 @@ async function animate(container, tl){
             tl.to("#thirteen .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to("#thirteen .text-graphics", {position: 'unset !important', duration: 0.1})
 
-            
-
             tl.to("#fifteen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
             tl.from("#fifteen .content-child", {y: 100, duration: 0.1})
-
 
             map.fitBounds(getGazaBounds(), {
                 padding: { top: 20, bottom: 20, left: 20, right: 20 },
@@ -1152,9 +1160,28 @@ async function animate(container, tl){
             playVideo("#twentyone")
             tl.to(".animated-image-three", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to(".animated-image-three", {position: 'unset !important', duration: 0.1})
+            tl.to("#twentytwo img", {position: 'fixed', opacity: 0, duration: 0.1})
+            tl.to("#twentytwo .text-graphics", {position: 'fixed', opacity: 0, duration: 0.1})
             break;
         case "twentytwo":
+            tl.to("#twentytwo img", {opacity: 1, duration: 0.1})
+            tl.to("#twentytwo .text-graphics", {opacity: 1, duration: 0.1})
             pauseVideo("#twentyone")
+            break;
+        case "twentythree":
+            const animatedImages = document.querySelector("#twentytwo img");
+            tl.add(changeImage(animatedImages, "./assets/GBU-39.png"));
+            break;
+        case "twentyfour":
+            const animatedImagess = document.querySelector("#twentytwo img");
+            tl.add(changeImage(animatedImagess, "./assets/GBU-39_destroyed.png"));
+            break;
+        case "twentyfive":
+            tl.to("#twentytwo img", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#twentytwo img", {position: 'unset !important', duration: 0.1})
+
+            tl.to("#twentytwo .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#twentytwo .text-graphics", {position: 'unset !important', duration: 0.1})
             break;
         case "twentysix":
             playVideo("#twentysix");
@@ -1632,7 +1659,6 @@ function showMap() {
     return gsap.to("#map", {
         opacity: 1,
         duration: 0.1,
-        ease: "power2.out"
     });
 }
 
@@ -1641,7 +1667,6 @@ function hideMap() {
     return gsap.to("#map", {
         opacity: 0,
         duration: 0.1,
-        ease: "power2.out"
     });
 }
 
