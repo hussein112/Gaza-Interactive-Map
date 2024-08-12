@@ -19,6 +19,7 @@
     <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
 </head>
 <body>
+    <button id="scrollToTopBtn" style="display: none;"></button>
     <div id="loading-screen">
         <div class="spinner"></div>
         <p class="spinner-text">جاري التحميل</p>
@@ -26,8 +27,10 @@
     <div class="warning">
         <img src="assets/warning.svg" alt="">
         <h2>تحذير</h2>
-        <p> تحتوي هذه الصفحة على مواد سمعية وبصرية
-            قد يجدها البعض مزعجة</p>
+        <p> 
+              تحتوي هذه الصفحة على مواد سمعية وبصرية
+ قد يجدها البعض مزعجة 
+        </p>
         <a id="unlockScrollButton">استمر</a>
     </div>
     <!-- Start Content (text, multimedia) Above the map -->
@@ -76,20 +79,24 @@
         </div>
 
         <div id="three-two" class="content-container">
-            <p class="content-child flexible w-30 bottom-left recolor">
-                <b>أظهرت صور الأقمار الصناعيــة حجم التغيــّـر الملحـــوظ فـــي مخيمات النازحين شمال رفـــح وانتقال الخيام في منطقة تــل السلطان بلوك 2371, 24372 إلى خانيونس بعد إعلان القوات الإسرائيليـة عبر مناشير تدعو فيها الأحياء الشرقية لرفح إلى إخلاء المنطقة من السكـــــان بشكل مؤقت والانتقال إلى المنطقة الإنسانيــة الموسعة.</b>
+            <p class="content-child flexible w-30 bottom-left recolor-m">
+                أظهرت صور الأقمار الصناعيــة حجم التغيــّـر الملحـــوظ فـــي مخيمات النازحين شمال رفـــح وانتقال الخيام في منطقة تــل السلطان بلوك 2371, 24372 إلى خانيونس بعد إعلان القوات الإسرائيليـة عبر مناشير تدعو فيها الأحياء الشرقية لرفح إلى إخلاء المنطقة من السكـــــان بشكل مؤقت والانتقال إلى المنطقة الإنسانيــة الموسعة.
             </p>
         </div>
 
         
         <div id="three-three" class="content-container">
-            <p class="content-child flexible bottom w-30 bottom-left recolor">
+            <p class="content-child flexible bottom w-30 bottom-left recolor-m">
                 بالرغم من ذلك لم تكن منطقة <b>تل السلطان</b> ضمن المناطق المحددة للإخلاء ولكنها شهدت انتقال وتغير كبير في شكل توزيع الخيام بعد مرور تسعة أيام من <a href="https://www.facebook.com/IDFarabicAvichayAdraee/posts/pfbid0GJNRiJTdfQApXhgkTMHdaJjLr4nKjJGZUbFTah2VZNjAevtap6VgYNy4CJMxmXcAl" target="_blank">إعلان</a> العمليات العسكرية الجديدة للقوات الإسرائيلية في رفح
             </p>
         </div>
 
         
         <div id="three-four" class="content-container ">
+            
+        </div>
+
+        <div id="three-five" class="content-container ">
             
         </div>
 
@@ -100,7 +107,7 @@
         </div>
 
         <div id="five-two" class="content-container left top">
-            <p class="content-child flexible bottom w-30 fixed">
+            <p class="content-child flexible top recolor-m w-30 fixed">
                 يمكن ملاحظة أجزاء من الأراضي الزراعية أيضًا جُرفت من أقصى الجنوب بفعل الإجتياح، بالإضافة إلى تدمير المباني السكنية هناك.
             </p>
         </div>
@@ -125,7 +132,7 @@
             <div class="content-child flexible image-with-caption ">
                 <img src="./assets/Mawasii.png" alt="Al Mawassi">
                 <p class="caption">
-                    يذكر <b>فيليب لازارينـي</b> المفوض العام لوكالة الأونروا أن المواصي كانت موطنـًا لأكثر مـن <b>400 ألف</b> شخص، فالمكان مكتظ ولا يتسع لعدد أكبر من النـــاس كما هو الحال في دير البلح في المناطق الوسطى. 
+                    يذكر <b>فيليب لازارينـي</b> المفوض العام لوكالة الأونروا أن المواصي كانت موطنـًا لأكثر مـن <b>400 ألف</b> شخص، فالمكان مكتظ ولا يتسع لعدد أكبر من النـــاس كما هو الحال في دير البلح في المناطق الوسطى.  
                 </p>
             </div>
         </div>
@@ -137,7 +144,7 @@
                     <p class="title">فيليب لازاريني</p>
                     <blockquote class="quote">
                         إن الادعاء بأن الناس في غزة يمكنهم الانتقال إلى مناطق "آمنــــة" أو "إنسانيـــة" هو ادعاء كـــاذب.
-                        وفي كل مرة، يعرض حياة المدنيين لخطر جسيم.     
+ وفي كل مرة، يعرض حياة المدنيين لخطر جسيم. 
                         <br>
                         <span>المفوض العام لوكالة الأونروا - 18 أيار 2024.</span>
                     </blockquote>
@@ -192,7 +199,7 @@
 
         <div id="eleven" class="content-container left top single">
             <p class="content-child flexible light">
-                في<b> 24 مايو/أيار 2024 </b>،قصفت الطائرات الإسرائيلية ارض بالقرب من المخيمات في مدينة أصداء بمنطقة المواصي خانيونس حسب <a href="https://archive.md/4qVZ8" target="_blank">البلاغات</a> يومذاك، تعتبر المواصي في المنطقة الإنسانية المزعومة والمعلنة بكونها آمنة.
+                في<b> 24 مايو/أيار 2024،</b> قصفت الطائرات الإسرائيلية أراضٍ بالقرب من المخيمات في مدينة أصداء بمنطقة المواصي خان يونس حسب <a href="https://archive.md/4qVZ8" target="_blank">البلاغات</a> يومذاك، مع أنّ المواصي مُدرَجة في المنطقة الإنسانية المزعومة والمعلنة عن كونها آمنة.
             </p>
         </div>
 
@@ -224,7 +231,7 @@
             <div class="content-child flexible">
                 <div class="text-graphics flexible bottom-left w-30 z-top">
                     <p>
-                        كما تشبه أيضًا اصدارات إسرائيل الخاصة من MK 83 الأمريكية التي تسمى MPR والتي تتشابه أيضًا مع عائلة <b>Paveway II</b> الأمريكية كذلك.
+                        كما تشبه أيضًا اصدارات إسرائيل الخاصّة من <b> MK 83</b> الأمريكية التي تسمّى <b>MPR</b> والتي تتشابه أيضًا مع عائلة <b> Paveway II</b> الأمريكية.
                     </p>
                     <img class="arrow-bottom-left" src="./assets/icons/migration_arrow_4.svg" alt="">
                 </div>
@@ -239,23 +246,19 @@
             <div class="content-child flexible">
                 <div class="text-graphics flexible bottom-left z-top fixed ">
                     <p class="medium">
-                        لا يمكن التأكد ما إذا كانت نسخة إمريكية أم إسرائيلية في هذه الحالة من خلال النظر للشكل العام فقــط، قـد يحتاج التحديد الدقيق الوصول الى بقايا القذيفة أو صور أقرب لها.
+                        لا يمكن التأكّد ممّا إذا كانت نسخة إمريكية أم إسرائيلية  عبر النظر إلى شكلها العام ، وقـد يحتاج التحديد الدقيق الوصولَ إلى بقايا القذيفة أو صورٍ أقرب لها.
                     </p>
                     <img src="./assets/icons/migration_arrow_4.svg" alt="" class="arrow-bottom-center-left">
                 </div>
             </div>
         </div>
 
-        <div id="fifteen" class="content-container top left single">
+        <div id="seventeen" class="content-container top left single">
             <div class="content-child flexible fixed top left">
                 <p>
                     عند اخذ صورة أوسع للمنطقة المتأثرة تظهر صور الأقمار الصناعية ضربتين إضافيتين على بعد <b>300</b> متر من الضربة التي تم توثيقها ونشرها على مواقع التواصل الإجتماعي.
                 </p>
             </div>
-        </div>
-
-        <div id="seventeen" class="content-container top left single">
-
         </div>
 
         <div id="eighteen" class="content-container top left single">
@@ -265,7 +268,7 @@
         <div id="eighteen-two" class="content-container center">
             <p class="content-child">
                 <b>
-                    بالرغم تحديد المنطقة كمنطقة إنسانية "آمنة" إلا أن القوات الإسرائيلية تستمر في إلقاء هجماتها مستخدمةً ذريعة إلقاء مناشير تحذيرية قبيل القصف طالبة من النازحين النزوح مجددًا.
+                    بالرغم من تحديد المنطقة كمنطقة إنسانية "آمنة"، إلّا أنّ القوّات الإسرائيلية تستمر في شنّ هجماتها مستخدمةً ذريعة إلقاء مناشير تحذيرية قبيل القصف طالبة من النازحين/ـات النزوح مجددًا.
                 </b>
             </p>
         </div>
@@ -294,7 +297,7 @@
             <div class="content-child flexible">
                 <div class="text-graphics flexible center-bottom-bottom z-top">
                     <p class="semi-bold">
-                        وفقًا لبيان المتحدث الإسرائيلي تم استخدام ذخيرتين تزن  17 كجم (37 باوند) في هجومها على المخيم في رفح
+                        وفقًا لبيان المتحدث الإسرائيلي استخدم  الجيش الإسرائيلي ذخيرتين بوزن  17 كجم (37 باوند) في الهجوم على المخيم في رفح.
                     </p>
                 </div>
                 <p class="center-bottom quote-general z-top" style="direction: ltr;">
@@ -338,7 +341,7 @@
                 </div>
                 <div class="text-graphics flexible center-bottom z-top">
                     <p class="semi-bold font-s-18 margin-bottom-20">
-                        كانت أحد التفاصيل المهمة التي ظهرت على إحدى القطع <span class="highlighted">رقم “81873”</span>، وهو رمز تعريف فريد <span class="highlighted">مخصص لشركة Woodward</span>، وهي شركة تصنيع طيران مقرها في كولورادو.
+                        كانت أحد التفاصيل المهمة التي ظهرت على إحدى القطع <span class="highlighted">رقم "81873"</span>، وهو رمز تعريف فريد <span class="highlighted">مخصص لشركة Woodward</span>، وهي شركة تصنيع طيران مقرها في كولورادو.
 من الجدير بالذكر، أن إسرائيل تلقت حتى عام 2023 حوالي 1000 قنبلة GBU-39 من الولايات المتحدة <span class="highlighted">وفقًا لبيانات نقل الأسلحة Sipri. </span>
                     </p>
                 </div>
@@ -376,7 +379,7 @@
                 <img src="./assets/Gaza_map_on_video.svg" alt="" class="gaza-map-on-video z-top">
                 <div class="text-graphics flexible top-center z-top">
                     <p class="semi-bold font-s-24 margin-bottom-20">
-                        ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، كانت بعض الخيام قد انهارت وبعضها الآخر مُلئ بالثقوب إثر تطاير شظايا المقذوف.​
+                        ظهر الضرر في مقاطع الفيديو المصورة بعد الحادثة، إذ ظهر أنّ بعض الخيام قد انهار، وبعضها الآخر تضرّر أو تمزّق إثر تطاير شظايا المقذوف.
                     </p>
                 </div>
                 <div id="loading-icon" class="z-top"></div>
@@ -438,7 +441,7 @@
             <div class="content-child flexible">
                 <h2 class="highlighted">ملاحظة المحرر </h2>
                 <p class="semi-bold">
-                    هذا التحقيق هو واحد من عدة تحقيقات مفتوحة المصدر تم إنتاجها من قبل فريق نوى ميديا للاستجابة لتغطية الحرب في غزة. 
+                    هذا التحقيق هو واحد من عدة <a href="https://www.osint.nawa.media/" target="_blank">تحقيقات</a> مفتوحة المصدر تم إنتاجها من قبل فريق نوى ميديا للاستجابة لتغطية الحرب في غزة. 
 <br>
 ونظرًا للعنف المتصاعد بسرعة، فإن الأرقام هي سجل تاريخي لذلك الوقت، وليست انعكاسًا للواقع الحالي. 
 <br>
@@ -450,6 +453,7 @@
                     الدعم التقني : حسين خليل  <br>
                     الإعداد البصري :  بيان عثمان <br>
                     الاشراف العام : عبد الرحمن جلود <br>
+                    تدقيق لغوي : زهراء ديراني <br>
                 </p>
             </div>
         </div>

@@ -18,7 +18,21 @@ import { evac_area_5 } from './data/evac_area_5.js';
 const elements = document.querySelectorAll("body *");
 const sections = document.querySelectorAll('.content-container');
 const totalSections = sections.length;
-const lenis = new Lenis()
+
+
+// Get the button
+let scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+// When the user clicks on the button, scroll to the top of the document
+scrollToTopBtn.addEventListener("click", function() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+});
+
+
+const lenis = new Lenis({
+    wheelMultiplier: 1.5
+})
 
 function raf(time) {
   lenis.raf(time)
@@ -292,26 +306,44 @@ const pauseVideo = (container) => {
     const video = document.querySelector(`${container} video`);
     video.pause();
 }
-
+function addNewStyle(newStyle) {
+    let styleElement = document.getElementById('styles_js');
+    if (!styleElement) {
+        styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.id = 'styles_js';
+        document.getElementsByTagName('head')[0].appendChild(styleElement);
+    }
+    styleElement.appendChild(document.createTextNode(newStyle));
+}
+function removeStyle(styleToRemove) {
+    let styleElement = document.getElementById('styles_js');
+    if (styleElement) {
+        let styleText = styleElement.innerHTML;
+        let newStyleText = styleText.replace(styleToRemove, '');
+        styleElement.innerHTML = newStyleText;
+    }
+}
 let loadedImages = {};
-function changeImage(image, newImage) {
+function changeImage(image, newImage, size, cs) {
     const prevImage = image.getAttribute("src");
     return gsap.to(image, {
-        // duration: 0.5,
-        // opacity: 0,
         onComplete: () => {
-            gsap.to(image, {
-                opacity: 1,
-                duration: 0.5
-            })
-            image.setAttribute("src", newImage)
+            image.setAttribute("src", newImage);
+            if(cs === "twentytwo"){
+                addNewStyle("#twentytwo img {width: " + size + "}");
+            }
+            gsap.fromTo(image, // Use fromTo for combined animation
+                { opacity: 0 },
+                { opacity: 1, duration: 0.5 }
+            );
         },
         onReverseComplete: () => {
             image.setAttribute("src", prevImage);
-            gsap.to(image, {
-                opacity: 1,
-                duration: 0.5
-            })
+            gsap.fromTo(image, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+            if(cs === "twentytwo"){
+                removeStyle("#twentytwo img {width: " + size + "}");
+            }
         },
     });
 }
@@ -625,13 +657,13 @@ const svgImages = [
     { id: 'rafah', path: 'assets/imagery/rafah.png', coordinates: [34.242789, 31.308767]},
     { id: 'rafah-two', path: 'assets/imagery/rafah_2.png', coordinates: [34.242789, 31.308767]},
     { id: 'rafah-three',path:  'assets/imagery/rafah_3.png', coordinates: [34.242789  + 0.003, 31.308767]},
+    { id: 'rafah-four',path:  'assets/imagery/rafah_4.png', coordinates: [34.242789  + 0.003, 31.308767]},
     { id: 'south-one', path: 'assets/imagery/south_1.png', coordinates: getCoordinates('south-one')},
     { id: 'south-two', path: 'assets/imagery/south_2.png', coordinates: getCoordinates('south-one')},
     { id: 'south-three', path: 'assets/imagery/south_3.png', coordinates: getCoordinates("south-three")},
     { id: 'mawasi', path: 'assets/imagery/mawasi.png', coordinates: [34.265655, 31.349355]},
     { id: 'mawasi-two', path: 'assets/imagery/mawasi_2.png', coordinates: [34.300712, 31.377954]},
     { id: 'mawasi-two-two', path: 'assets/imagery/mawasi_2_2.png', coordinates: [34.300712, 31.377954]},
-    { id: 'mawasi-three', path: 'assets/imagery/mawasi_3.png', coordinates: [34.284616, 31.368566]},
     { id: 'mawasi-four', path: 'assets/imagery/mawasi_4.png', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-five', path: 'assets/imagery/mawasi_5.png', coordinates: [34.296442, 31.375787]},
     { id: 'mawasi-six', path: 'assets/imagery/mawasi_6.png', coordinates: [34.238994, 31.332507]},
@@ -645,13 +677,17 @@ function isMobileScreen() {
     return window.innerWidth <= 768; // Adjust this breakpoint as needed
 }
 
+function isMobileScreenX() {
+    return window.innerWidth <= 578; // Adjust this breakpoint as needed
+}
+
 // Function to get appropriate bounds based on screen size
 function getGazaBounds() {
     if (isMobileScreen()) {
         // Tighter bounds for mobile screens
         return [
-            [34.140, 31.28],  // Southwest coordinates
-            [34.54, 31.49]   // Northeast coordinates
+            [34.075, 31.25],  // Southwest coordinates (moved down a little)
+            [34.625, 31.55]   // Northeast coordinates (moved down a little)
         ];
     } else {
         // Wider bounds for larger screens
@@ -666,9 +702,14 @@ function getIconSize(size, accurate = false){
     if(accurate){
         return isMobileScreen() ? size - 0.1 : size;
     }
+    if(isXl()){
+        return size + 0.1;
+    }
     return isMobileScreen() ? size  - 0.10 : size;
 }
-
+function isXl(){
+    return window.innerWidth >= 1800;
+}
 // Add Support for RTL Languages 
 maplibregl.setRTLTextPlugin(
     'https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js',
@@ -761,7 +802,7 @@ async function animate(container, tl){
             fastScrollEnd: true
         }
     })
-    tl.to(container, {opacity: 1, duration: 0.5 })
+    tl.to(container, {opacity: 1, duration: 0.5})
     const currentId = container.id;
     switch (currentId) {
         case "one":
@@ -926,9 +967,13 @@ async function animate(container, tl){
             // add the third image
             tl.add(addImageLayer("rafah-three", getIconSize(0.23)))
             break;
-        case "four":
+        case "three-five":
             tl.add(removePreviousLayer("rafah-three", 'icon-opacity'))
+            tl.add(addImageLayer("rafah-four", getIconSize(0.23)))
+            break;
+        case "four":
             // Hide The Map
+            tl.add(removePreviousLayer("rafah-four", 'icon-opacity'))
             tl.add(hideMap());
             break;
         case "five-two":
@@ -989,7 +1034,7 @@ async function animate(container, tl){
                 })
                 tl.add(addImageLayer("mawasi", 0.62))
             }
-            
+            // tl.add(switchLabelsVisibility("visible", ['label_country', 'label_place_city', 'label_place_other', 'label_road']));
             break;
         case "eight":
             tl.to("#seven .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1030,15 +1075,14 @@ async function animate(container, tl){
                 tl.set(image, {visibility: 'hidden', opacity: 1, y: 0, duration: 0.1})
                 tl.to(image, {position: 'unset !important', duration: 0.1})
             })
-            tl.set("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
-            tl.set("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
-            tl.set("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.00001})
-            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
-            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
-            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.00001})
+            tl.set("#ten-two .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.set("#ten-three .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.set("#ten-four .content-child .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#ten-two .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+            tl.to("#ten-three .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+            tl.to("#ten-four .content-child .text-graphics", {position: 'unset !important', duration: 0.1})
+            tl.progress(1);
             // Show The Map
-            console.log(tl.scrollTrigger);
-            console.log(tl.scrollTrigger.getTween());
             tl.add(showMap());
             map.flyTo({
                 zoom: 13,
@@ -1046,6 +1090,9 @@ async function animate(container, tl){
                 center: [34.300712, 31.377954]
             })
             tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
+            tl.to("body", {
+                backgroundColor: "#3e3e3e",
+            })
             loadHalfTwoPartTwo();
             break;
         case "eleven-two":
@@ -1057,19 +1104,20 @@ async function animate(container, tl){
             tl.add(hideMap());
 
             tl.add(removePreviousLayer("mawasi-two-two", "icon-opacity"))
-            tl.to("#twelve .fixed", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#twelve .fixed", {y: 100, duration: 0.1, clearProps: "transform"})
             break;
         case "thirteen":
             tl.to(".animated-video", {visibility: "visible", opacity: 1, duration: 0.1})
             tl.from(".animated-video", {y: 100, duration: 0.1, clearProps: "transform"})
-            playVideo("#thirteen")                            
+            playVideo("#thirteen")
             break;
         case "fourteen":
             tl.to("#fourteen .text-graphics", {visibility: "visible", opacity: 1, duration: 0.1})
             tl.from("#fourteen .text-graphics", {y: 100, duration: 0.1})
             break;
-        case "fifteen":
+        case "seventeen":
+            tl.to("body", {
+                backgroundColor: "#373737",
+            })
             tl.to(".animated-video", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to(".animated-video", {position: 'unset !important', duration: 0.1})
 
@@ -1081,37 +1129,16 @@ async function animate(container, tl){
             tl.to("#thirteen .text-graphics", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to("#thirteen .text-graphics", {position: 'unset !important', duration: 0.1})
 
-            tl.to("#fifteen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
-            tl.from("#fifteen .content-child", {y: 100, duration: 0.1})
+            tl.to("#seventeen .content-child", {visibility: "visible", opacity: 1, duration: 0.1})
+            tl.from("#seventeen .content-child", {y: 100, duration: 0.1})
 
             map.fitBounds(getGazaBounds(), {
                 padding: { top: 20, bottom: 20, left: 20, right: 20 },
                 maxZoom: 15, 
                 duration: 1000
             });
-            
             tl.add(showMap());
-            if(isMobileScreen()){
-                tl.add(addImageLayer("mawasi-three", 0.36, -42))
-                map.flyTo({
-                    zoom: 13,
-                    bearing: 42,
-                    essential: true,
-                    center: [34.285983, 31.372169]
-                })
-            }else{
-                tl.add(addImageLayer("mawasi-three", 0.36))
-                map.flyTo({
-                    zoom: 13,
-                    essential: true,
-                    center: [34.285983, 31.372169]
-                })
-            }
-            
-            break;
-        case "seventeen":
             tl.add(addImageLayer("mawasi-four", getIconSize(0.4))) 
-            // tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
             map.flyTo({
                 zoom: 13.2,
                 essential: true,
@@ -1123,8 +1150,8 @@ async function animate(container, tl){
             tl.add(addImageLayer("mawasi-five", getIconSize(0.4))) 
             break;
         case "eighteen-two":
-            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
+            tl.to("#seventeen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#seventeen .content-child", {position: 'unset !important', duration: 0.1})
             tl.add(hideMap());
             break;
         case "sixteen":
@@ -1136,8 +1163,8 @@ async function animate(container, tl){
             break;
         case "nineteen":
             playVideo("#nineteen");
-            tl.to("#fifteen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
-            tl.to("#fifteen .content-child", {position: 'unset !important', duration: 0.1})
+            tl.to("#seventeen .content-child", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
+            tl.to("#seventeen .content-child", {position: 'unset !important', duration: 0.1})
 
             tl.to("#map", {
                 opacity: 0,
@@ -1150,7 +1177,6 @@ async function animate(container, tl){
                 duration: 1000
             });
             tl.add(removePreviousLayer("mawasi-five", "icon-opacity"))
-            tl.add(removePreviousLayer("mawasi-three", "icon-opacity"))
 
             tl.to(".animated-image-three", {visibility: "visible", opacity: 1, duration: 0.1})
             tl.from(".animated-image-three", {y: 100, duration: 0.1})
@@ -1170,11 +1196,19 @@ async function animate(container, tl){
             break;
         case "twentythree":
             const animatedImages = document.querySelector("#twentytwo img");
-            tl.add(changeImage(animatedImages, "./assets/GBU-39.png"));
+            if(isMobileScreenX()){
+                tl.add(changeImage(animatedImages, "./assets/GBU-39.png", "80% !important", "twentytwo"));
+            }else{
+                tl.add(changeImage(animatedImages, "./assets/GBU-39.png", "20% !important", "twentytwo"));
+            }
             break;
         case "twentyfour":
             const animatedImagess = document.querySelector("#twentytwo img");
-            tl.add(changeImage(animatedImagess, "./assets/GBU-39_destroyed.png"));
+            if(isMobileScreenX()){
+                tl.add(changeImage(animatedImagess, "./assets/GBU-39_destroyed.png", "80% !important", "twentyfour"));
+            }else{
+                tl.add(changeImage(animatedImagess, "./assets/GBU-39_destroyed.png", "20% !important", "twentyfour"));
+            }
             break;
         case "twentyfive":
             tl.to("#twentytwo img", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
@@ -1252,6 +1286,9 @@ async function animate(container, tl){
             tl.add(removePreviousLayer("mawasi-eight", 'icon-opacity'))
             const detachedElements = findDetachedElements();
             cleanDetachedElements(detachedElements);
+            break;
+        case "thirtythree":
+            scrollToTopBtn.style.display = "block";
             break;
     }
     return tl;
@@ -1411,6 +1448,9 @@ async function animateBack(container, tl){
                 maxZoom: 15, 
                 duration: 1000
             });
+            break;
+        case "one":
+            scrollToTopBtn.style.display = "none";
             break;
     }
 }
