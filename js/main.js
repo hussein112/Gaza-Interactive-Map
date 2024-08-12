@@ -20,18 +20,16 @@ const sections = document.querySelectorAll('.content-container');
 const totalSections = sections.length;
 
 
-// Get the button
 let scrollToTopBtn = document.getElementById("scrollToTopBtn");
 
-// When the user clicks on the button, scroll to the top of the document
 scrollToTopBtn.addEventListener("click", function() {
-  document.body.scrollTop = 0; // For Safari
-  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  document.body.scrollTop = 0; 
+  document.documentElement.scrollTop = 0;
 });
 
 
 const lenis = new Lenis({
-    wheelMultiplier: 1.5
+    wheelMultiplier: 1.2
 })
 
 function raf(time) {
@@ -220,7 +218,7 @@ function showLoading(){
 
     // Function to watch areAllSVGsLoaded and dispatch event when true
     function watchSVGLoading() {
-        if (areHalfOneLoaded() && ready) {
+        if (areHalfOneLoaded()) {
             const event = new CustomEvent(SVG_LOADED_EVENT);
             document.dispatchEvent(event);
             hideLoadingScreen();
@@ -700,6 +698,9 @@ function getGazaBounds() {
 
 function getIconSize(size, accurate = false){
     if(accurate){
+        if(isMobileScreenX()){
+            return size - 0.3;
+        }
         return isMobileScreen() ? size - 0.1 : size;
     }
     if(isXl()){
@@ -767,28 +768,7 @@ function removeAll(){
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    scrollToSection(0);
-    // detectBrowser();
-    document.querySelectorAll("video").forEach(video => {
-        video.addEventListener('error', (e) => {
-            console.log("Error loading video:" + e);
-        });
-        video.load();
-        video.addEventListener('canplay', () => {
-            video.previousElementSibling.style.display = 'none';
-        });
-    });
-    loadHalfOne();
-    showLoading();
-    const isFirefox = typeof InstallTrigger !== 'undefined';
-    if (isFirefox && isMobileScreen()) {
-        const videos = document.querySelectorAll('video');
-        videos.forEach(video => {
-            video.removeAttribute('controls');
-        });
-    }
-});
+
 
 async function animate(container, tl){
     tl = gsap.timeline({
@@ -945,12 +925,20 @@ async function animate(container, tl){
 
             // add the image
             tl.add(addImageLayer("rafah", getIconSize(0.3)))
+            if(isMobileScreenX()){
+                map.flyTo({
+                    center: [34.242789, 31.308767],
+                    essential: true,
+                    zoom: 13.5
+                });
+            }else{
+                map.flyTo({
+                    center: [34.242789, 31.308767],
+                    essential: true,
+                    zoom: 14
+                });
+            }
 
-            map.flyTo({
-                center: [34.242789, 31.308767],
-                essential: true,
-                zoom: 14
-            });
             break;
         case "three-three":
             loadHalfTwo();
@@ -1297,6 +1285,9 @@ async function animateBack(container, tl){
     }
     const currentId = container.id;
     switch (currentId) {
+        case "thirtythree":
+            scrollToTopBtn.style.display = "none";
+            break;
         case "thirty":
             if(isMobileScreen()){
                 map.flyTo({
@@ -1432,11 +1423,19 @@ async function animateBack(container, tl){
             })
             break;
         case "four":
-            map.flyTo({
-                center: [34.242789, 31.308767],
-                essential: true,
-                zoom: 14
-            });
+            if(isMobileScreenX()){
+                map.flyTo({
+                    center: [34.242789, 31.308767],
+                    essential: true,
+                    zoom: 13.5
+                });
+            }else{
+                map.flyTo({
+                    center: [34.242789, 31.308767],
+                    essential: true,
+                    zoom: 14
+                });
+            }
             break;
         case "three-two":
             map.fitBounds(getGazaBounds(), {
@@ -1450,12 +1449,33 @@ async function animateBack(container, tl){
             break;
     }
 }
-let ready = false;
-map.on('idle', (e) => {
-    ready = true;
-});
+
 
 map.on('load', async () => {
+    console.log("OK");
+    scrollToSection(0);
+    // detectBrowser();
+    document.querySelectorAll("video").forEach(video => {
+        video.addEventListener('error', (e) => {
+            console.log("Error loading video:" + e);
+        });
+        video.load();
+        video.addEventListener('canplay', () => {
+            video.previousElementSibling.style.display = 'none';
+        });
+        if(video.classList.contains("daniel-video")){
+            video.previousElementSibling.style.display = 'none';
+        }
+    });
+    loadHalfOne();
+    showLoading();
+    const isFirefox = typeof InstallTrigger !== 'undefined';
+    if (isFirefox && isMobileScreen()) {
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            video.removeAttribute('controls');
+        });
+    }
     map.fitBounds(getGazaBounds(), {
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
         maxZoom: 15, 
