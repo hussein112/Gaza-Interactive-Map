@@ -1090,9 +1090,7 @@ async function animate(container, tl){
                 center: [34.300712, 31.377954]
             })
             tl.add(addImageLayer("mawasi-two", getIconSize(0.5)))
-            tl.to("body", {
-                backgroundColor: "#3e3e3e",
-            })
+
             loadHalfTwoPartTwo();
             break;
         case "eleven-two":
@@ -1115,9 +1113,7 @@ async function animate(container, tl){
             tl.from("#fourteen .text-graphics", {y: 100, duration: 0.1})
             break;
         case "seventeen":
-            tl.to("body", {
-                backgroundColor: "#373737",
-            })
+
             tl.to(".animated-video", {visibility: "hidden", opacity: 1, y: 0, duration: 0.1})
             tl.to(".animated-video", {position: 'unset !important', duration: 0.1})
 
