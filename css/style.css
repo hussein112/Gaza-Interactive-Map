@@ -1220,12 +1220,11 @@ video::-ms-media-controls {
     transform: translate(-39%, 33%);
 }
 
-/* .refugee-camp-circle{
-    position: absolute;
-    top: 27%;
-    right: 72.7%;
-} */
-
+@media(max-width: 576px){
+    .scroll-down a::after{
+        transform: translate(-50%, 33%);
+    }
+}
 
 .bomb-circle{
     position: absolute;
