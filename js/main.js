@@ -1452,7 +1452,6 @@ async function animateBack(container, tl){
 
 
 map.on('load', async () => {
-    console.log("OK");
     scrollToSection(0);
     // detectBrowser();
     document.querySelectorAll("video").forEach(video => {
